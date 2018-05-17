@@ -23,11 +23,10 @@
 
 
 /**
- * Phalconator\Cli\Tool\Color
- *
- * The class color cli lines
- *
- */
+  * Phalconator\Cli\Tool\Color
+  *
+  * The class color cli lines
+  */
 ZEPHIR_INIT_CLASS(Phalconator_Cli_Tool_Color) {
 
 	ZEPHIR_REGISTER_CLASS(Phalconator\\Cli\\Tool, Color, phalconator, cli_tool_color, phalconator_cli_tool_color_method_entry, 0);
@@ -102,7 +101,7 @@ PHP_METHOD(Phalconator_Cli_Tool_Color, render) {
 
 
 	if (ZEPHIR_IS_EMPTY(&d)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "phalconator/cli/tool/color.zep", 98);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "phalconator/cli/tool/color.zep", 97);
 		return;
 	}
 	_0 = zephir_is_true(c);
@@ -110,7 +109,7 @@ PHP_METHOD(Phalconator_Cli_Tool_Color, render) {
 		_0 = Z_TYPE_P(c) != IS_STRING;
 	}
 	if (_0) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad color type", "phalconator/cli/tool/color.zep", 102);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad color type", "phalconator/cli/tool/color.zep", 101);
 		return;
 	}
 	_1 = zephir_is_true(b);
@@ -118,7 +117,7 @@ PHP_METHOD(Phalconator_Cli_Tool_Color, render) {
 		_1 = Z_TYPE_P(b) != IS_STRING;
 	}
 	if (_1) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad background type", "phalconator/cli/tool/color.zep", 106);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad background type", "phalconator/cli/tool/color.zep", 105);
 		return;
 	}
 	_2 = zephir_is_true(s);
@@ -126,7 +125,7 @@ PHP_METHOD(Phalconator_Cli_Tool_Color, render) {
 		_2 = Z_TYPE_P(s) != IS_STRING;
 	}
 	if (_2) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad style type", "phalconator/cli/tool/color.zep", 110);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Bad style type", "phalconator/cli/tool/color.zep", 109);
 		return;
 	}
 	ZEPHIR_CALL_SELF(&_3, "clear", NULL, 0, &d);
@@ -223,17 +222,17 @@ PHP_METHOD(Phalconator_Cli_Tool_Color, _concat) {
 	ZEPHIR_OBS_VAR(&co);
 	zephir_read_static_property_ce(&_0, phalconator_cli_tool_color_ce, SL("_color"), PH_NOISY_CC | PH_READONLY);
 	if (zephir_array_isset_fetch(&co, &_0, c, 0 TSRMLS_CC)) {
-		zephir_array_append(&concat, &co, PH_SEPARATE, "phalconator/cli/tool/color.zep", 143);
+		zephir_array_append(&concat, &co, PH_SEPARATE, "phalconator/cli/tool/color.zep", 142);
 	}
 	ZEPHIR_OBS_VAR(&st);
 	zephir_read_static_property_ce(&_1, phalconator_cli_tool_color_ce, SL("_style"), PH_NOISY_CC | PH_READONLY);
 	if (zephir_array_isset_fetch(&st, &_1, s, 0 TSRMLS_CC)) {
-		zephir_array_append(&concat, &st, PH_SEPARATE, "phalconator/cli/tool/color.zep", 147);
+		zephir_array_append(&concat, &st, PH_SEPARATE, "phalconator/cli/tool/color.zep", 146);
 	}
 	ZEPHIR_OBS_VAR(&bg);
 	zephir_read_static_property_ce(&_2, phalconator_cli_tool_color_ce, SL("_background"), PH_NOISY_CC | PH_READONLY);
 	if (zephir_array_isset_fetch(&bg, &_2, b, 0 TSRMLS_CC)) {
-		zephir_array_append(&concat, &bg, PH_SEPARATE, "phalconator/cli/tool/color.zep", 151);
+		zephir_array_append(&concat, &bg, PH_SEPARATE, "phalconator/cli/tool/color.zep", 150);
 	}
 	ZEPHIR_INIT_VAR(&_3);
 	zephir_fast_join_str(&_3, SL(";"), &concat TSRMLS_CC);
