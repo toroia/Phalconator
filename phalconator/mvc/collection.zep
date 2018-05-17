@@ -5,5 +5,5 @@ use Phalcon\Mvc\Collection as PhalconCollection;
 
 abstract class Collection extends PhalconCollection
 {
-
+	
 }
