@@ -15,11 +15,10 @@
 
 
 /**
-  * Phalconator\Cli\Tool\Menu
-  *
-  * The class menu cli lines
-  *
-  */
+ * Phalconator\Cli\Tool\Menu
+ *
+ * The class menu cli lines
+ */
 ZEPHIR_INIT_CLASS(Phalconator_Cli_Tool_Menu) {
 
 	ZEPHIR_REGISTER_CLASS(Phalconator\\Cli\\Tool, Menu, phalconator, cli_tool_menu, NULL, 0);

@@ -16,17 +16,16 @@
  +------------------------------------------------------------------------+
  */
 
- namespace Phalconator\Cli\Tool;
+namespace Phalconator\Cli\Tool;
 
- use Phalconator\Cli\Exception;
- 
- /**
-  * Phalconator\Cli\Tool\Menu
-  *
-  * The class menu cli lines
-  *
-  */
- class Menu
- {
+use Phalconator\Cli\Exception;
 
- }
+/**
+ * Phalconator\Cli\Tool\Menu
+ *
+ * The class menu cli lines
+ */
+class Menu
+{
+
+}
