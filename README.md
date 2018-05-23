@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/phalcon/cphalcon.svg?branch=master)](https://travis-ci.org/phalcon/cphalcon)
-[![Build Status](https://travis-ci.org/phalcon/cphalcon.svg?branch=master)](https://travis-ci.org/phalcon/cphalcon)
-[![Build Status](https://travis-ci.org/phalcon/cphalcon.svg?branch=master)](https://travis-ci.org/phalcon/cphalcon)
+[![Build Status](https://travis-ci.org/toroia/phalconator.svg?branch=master)](https://travis-ci.org/toroia/phalconator)
 
 # Getting started
 Phalconator is a library for [Phalcon](https://github.com/phalcon/cphalcon/) framework, Phalconator is written in [Zephir/C](https://zephir-lang.com/) and available for Microsoft Windows, GNU/Linux, FreeBSD and MacOS.
@@ -10,6 +8,6 @@ Follow these instructions to generate a binary extension for your platform:
 
 ```bash
 git clone git://github.com/toroia/phalconator.git
-cd phalconator/build
+cd phalconator/ext
 sudo ./install
 ```
