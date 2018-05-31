@@ -15,7 +15,7 @@ env:
 install:
   - composer install -q -n --no-ansi --no-progress --dev --prefer-dist --no-suggest
   - curl -s "https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh" | sudo bash
-  - sudo apt-get install php-phalcon
+  - sudo apt-get install -y php-phalcon
   - ./vendor/bin/zephir generate --backend=ZendEngine3
 
 before_script:
