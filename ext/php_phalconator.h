@@ -11,7 +11,7 @@
 #include "kernel/globals.h"
 
 #define PHP_PHALCONATOR_NAME        "phalconator"
-#define PHP_PHALCONATOR_VERSION     "0.0.1"
+#define PHP_PHALCONATOR_VERSION     "0.0.2"
 #define PHP_PHALCONATOR_EXTNAME     "phalconator"
 #define PHP_PHALCONATOR_AUTHOR      "Toroia Team and contributors"
 #define PHP_PHALCONATOR_ZEPVERSION  "0.10.9-10331f595c"

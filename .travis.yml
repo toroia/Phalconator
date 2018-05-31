@@ -1,0 +1,33 @@
+language: php
+
+php:
+  - 7.0
+
+git:
+  depth: 1
+
+env:
+  global:
+
+dependencies:
+  cache_directories:
+    - vendor
+    - ~/.composer/cache
+    - ~/cphalcon
+
+before_install:
+  - composer install --prefer-source --no-interaction
+  - vendor/bin/install-phalcon.sh
+
+install:
+  - vendor/bin/zephir generate --backend=ZendEngine3
+
+before_script:
+
+script:
+  - vendor/bin/phpunit
+
+notifications:
+    email:
+        on_success: never
+        on_failure: never
