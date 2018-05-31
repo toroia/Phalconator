@@ -2,9 +2,6 @@ language: php
 
 php:
   - 7.0
-  - 7.1
-  - 7.2
-  - nightly
 
 git:
   depth: 1
@@ -15,7 +12,7 @@ env:
 install:
   - composer install -q -n --no-ansi --no-progress --dev --prefer-dist --no-suggest
   - curl -s "https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh" | sudo bash
-  - sudo apt-get install -y php$(phpenv version-name)-phalcon
+  - sudo apt-get install -y php7.0-phalcon
   - ./vendor/bin/zephir generate --backend=ZendEngine3
 
 before_script:
