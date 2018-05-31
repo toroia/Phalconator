@@ -16,7 +16,7 @@ dependencies:
     - ~/cphalcon
 
 before_install:
-  - composer install -q -n --no-ansi --no-progress --dev --prefer-dist --no-suggest
+  - composer install --prefer-source --no-interaction
   - vendor/bin/install-phalcon.sh
 
 install:
