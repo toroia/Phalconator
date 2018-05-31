@@ -9,11 +9,18 @@ git:
 env:
   global:
 
-install:
+dependencies:
+  cache_directories:
+    - vendor
+    - ~/.composer/cache
+    - ~/cphalcon
+
+before_install:
   - composer install -q -n --no-ansi --no-progress --dev --prefer-dist --no-suggest
-  - curl -s "https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh" | sudo bash
-  - sudo apt-get install -y php7.0-phalcon
-  - ./vendor/bin/zephir generate --backend=ZendEngine3
+  - vendor/bin/install-phalcon.sh
+
+install:
+  - vendor/bin/zephir generate --backend=ZendEngine3
 
 before_script:
 

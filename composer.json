@@ -18,7 +18,8 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "ext-xml": "*",
-    "phalcon/zephir": "^0.10"
+    "phalcon/zephir": "^0.10",
+    "techpivot/phalcon-ci-installer": "~1.0"
   },
   "license": "BSD-3-Clause",
   "authors": [
