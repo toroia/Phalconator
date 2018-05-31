@@ -56,7 +56,7 @@
     "name": "phalconator",
     "description": "Web extension for Phalcon framework delivered as C-extension",
     "author": "Toroia Team and contributors",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "verbose": false,
     "requires": {
         "extensions": [
