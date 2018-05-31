@@ -1,0 +1,41 @@
+{
+  "name": "toroia/phalconator",
+  "description": "Web extension for Phalcon framework delivered as C-extension",
+  "keywords": [
+    "extension",
+    "phalcon",
+    "phalconator",
+    "library",
+    "zephir"
+  ],
+  "require": {
+    "php": ">=7.0"
+  },
+  "require-dev": {
+    "ext-dom": "*",
+    "ext-zip": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "ext-xml": "*",
+    "phalcon/zephir": "^0.10"
+  },
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Toroia Team",
+      "email": "contact@toroia.fr",
+      "homepage": "https://toroia.fr"
+    },
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/toroia/phalconator/graphs/contributors"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/toroia/phalconator/issues",
+    "source": "https://github.com/toroia/phalconator",
+    "wiki": "https://github.com/toroia/phalconator/wiki",
+    "email": "contact@toroia.fr"
+  }
+}

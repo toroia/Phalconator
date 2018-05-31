@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/toroia/phalconator.svg?branch=master)](https://travis-ci.org/toroia/phalconator)
+[![GitHub license](https://img.shields.io/github/license/toroia/phalconator.svg?style=for-the-badge)](https://github.com/toroia/phalconator/blob/master/LICENSE)
 
 # Getting started
 Phalconator is a library for [Phalcon](https://github.com/phalcon/cphalcon/) framework, Phalconator is written in [Zephir/C](https://zephir-lang.com/) and available for Microsoft Windows, GNU/Linux, FreeBSD and MacOS.
