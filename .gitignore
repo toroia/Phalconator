@@ -1,5 +1,3 @@
-composer.lock
-
 # Ignore specific files (from https://github.com/phalcon/cphalcon/blob/master/.gitignore)
 ext/ltmain.sh
 ext/Makefile
@@ -38,6 +36,7 @@ ext/run-tests.php
 *.deps
 lemon
 
+.idea/
 .libs/
 .temp/
 autom4te.cache/
