@@ -1,19 +1,11 @@
 
-/*
- +------------------------------------------------------------------------+
- | Phalconator Library                                                    |
- +------------------------------------------------------------------------+
- | Copyright (c) Toroia Team (https://toroia.fr)                          |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file LICENSE.                                 |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to contact@toroia.fr so we can send you a copy immediately.            |
- +------------------------------------------------------------------------+
- | Author(s): Toroia team and contributors <contact@toroia.fr>            |
- +------------------------------------------------------------------------+
+/**
+ * This file is part of the Phalconator extension for Phalcon Framework.
+ *
+ * Copyright (C) Toroia Team <contact@toroia.fr>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
  */
 
 namespace Phalconator\Cli\Text;
