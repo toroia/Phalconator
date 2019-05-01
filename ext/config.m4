@@ -10,11 +10,15 @@ if test "$PHP_PHALCONATOR" = "yes"; then
 
 	AC_DEFINE(HAVE_PHALCONATOR, 1, [Whether you have Phalconator])
 	phalconator_sources="phalconator.c kernel/main.c kernel/memory.c kernel/exception.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/math.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/time.c kernel/exit.c phalconator/exception.zep.c
+	phalconator/mvc/collectioninterface.zep.c
+	phalconator/mvc/entityinterface.zep.c
 	phalconator/cli/exception.zep.c
 	phalconator/cli/text.zep.c
 	phalconator/cli/text/color.zep.c
 	phalconator/cli/text/menu.zep.c
-	phalconator/mvc/collection.zep.c "
+	phalconator/mvc/collection.zep.c
+	phalconator/mvc/collection/exception.zep.c
+	phalconator/mvc/collection/managerinterface.zep.c "
 	PHP_NEW_EXTENSION(phalconator, $phalconator_sources, $ext_shared,, )
 	PHP_SUBST(PHALCONATOR_SHARED_LIBADD)
 

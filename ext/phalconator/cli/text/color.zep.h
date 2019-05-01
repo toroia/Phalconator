@@ -9,18 +9,38 @@ PHP_METHOD(Phalconator_Cli_Text_Color, clear);
 PHP_METHOD(Phalconator_Cli_Text_Color, _concat);
 void zephir_init_static_properties_Phalconator_Cli_Text_Color(TSRMLS_D);
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_cli_text_color_render, 0, 0, 1)
+#if PHP_VERSION_ID >= 70200
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color_render, 0, 1, IS_STRING, 0)
+#else
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color_render, 0, 1, IS_STRING, NULL, 0)
+#endif
+#if PHP_VERSION_ID >= 70200
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+#else
 	ZEND_ARG_INFO(0, data)
+#endif
 	ZEND_ARG_INFO(0, color)
 	ZEND_ARG_INFO(0, background)
 	ZEND_ARG_INFO(0, style)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_cli_text_color_clear, 0, 0, 1)
+#if PHP_VERSION_ID >= 70200
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color_clear, 0, 1, IS_STRING, 0)
+#else
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color_clear, 0, 1, IS_STRING, NULL, 0)
+#endif
+#if PHP_VERSION_ID >= 70200
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+#else
 	ZEND_ARG_INFO(0, data)
+#endif
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_cli_text_color__concat, 0, 0, 0)
+#if PHP_VERSION_ID >= 70200
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color__concat, 0, 0, IS_STRING, 0)
+#else
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_cli_text_color__concat, 0, 0, IS_STRING, NULL, 0)
+#endif
 	ZEND_ARG_INFO(0, color)
 	ZEND_ARG_INFO(0, background)
 	ZEND_ARG_INFO(0, style)

@@ -1,22 +1,13 @@
-
 /*
-  +------------------------------------------------------------------------+
-  | Zephir Language                                                        |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2017 Zephir Team (http://www.zephir-lang.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@zephir-lang.com so we can send you a copy immediately.      |
-  +------------------------------------------------------------------------+
-  | Authors: Andres Gutierrez <andres@zephir-lang.com>                     |
-  |          Eduar Carvajal <eduar@zephir-lang.com>                        |
-  |          Vladimir Kolesnikov <vladimir@extrememember.com>              |
-  +------------------------------------------------------------------------+
-*/
+ * This file is part of the Zephir.
+ *
+ * (c) Zephir Team <team@zephir-lang.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code. If you did not receive
+ * a copy of the license it is available through the world-wide-web at the
+ * following url: https://docs.zephir-lang.com/en/latest/license
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -26,6 +17,7 @@
 #include "php_ext.h"
 
 #include <Zend/zend_closures.h>
+#include <Zend/zend_string.h>
 
 #include "kernel/main.h"
 #include "kernel/memory.h"
@@ -353,14 +345,13 @@ int zephir_clone(zval *destination, zval *obj)
 		clone_call =  Z_OBJ_HT_P(obj)->clone_obj;
 		if (!clone_call) {
 			if (ce) {
-				php_error_docref(NULL, E_ERROR, "Trying to clone an uncloneable object of class %s", ce->name);
+				php_error_docref(NULL, E_ERROR, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
 			} else {
 				php_error_docref(NULL, E_ERROR, "Trying to clone an uncloneable object");
 			}
 			status = FAILURE;
 		} else {
 			if (!EG(exception)) {
-				//zval_ptr_dtor(destination);
 				ZVAL_OBJ(destination, clone_call(obj));
 				if (EG(exception)) {
 					zval_ptr_dtor(destination);
@@ -579,6 +570,10 @@ int zephir_update_property_zval(zval *object, const char *property_name, unsigne
 
 	ZVAL_STRINGL(&property, property_name, property_length);
 
+	if (Z_TYPE_P(value) == IS_ARRAY) {
+		SEPARATE_ARRAY(value);
+	}
+
 	/* write_property will add 1 to refcount, so no Z_TRY_ADDREF_P(value); is necessary */
 	Z_OBJ_HT_P(object)->write_property(object, &property, value, 0);
 	zval_ptr_dtor(&property);
@@ -724,7 +719,14 @@ int zephir_update_property_array_append(zval *object, char *property, unsigned i
 			array_init(&tmp);
 			separated = 1;
 		}
-		Z_DELREF(tmp);
+
+		if (Z_REFCOUNTED(tmp)) {
+			if (Z_REFCOUNT(tmp) > 1) {
+				if (!Z_ISREF(tmp)) {
+					Z_DELREF(tmp);
+				}
+			}
+		}
 	}
 
 	Z_TRY_ADDREF_P(value);
@@ -732,6 +734,14 @@ int zephir_update_property_array_append(zval *object, char *property, unsigned i
 
 	if (separated) {
 		zephir_update_property_zval(object, property, property_length, &tmp);
+	}
+
+	if (Z_REFCOUNTED(tmp)) {
+		if (Z_REFCOUNT(tmp) > 1) {
+			if (!Z_ISREF(tmp)) {
+				Z_DELREF(tmp);
+			}
+		}
 	}
 
 	return SUCCESS;
@@ -1085,7 +1095,11 @@ typedef struct _zend_closure {
 	zend_function     func;
 	zval              this_ptr;
 	zend_class_entry *called_scope;
+#if PHP_VERSION_ID >= 70300
+	zif_handler       orig_internal_handler;
+#else
 	void (*orig_internal_handler)(INTERNAL_FUNCTION_PARAMETERS);
+#endif
 } zend_closure;
 
 /**
@@ -1151,7 +1165,9 @@ int zephir_create_instance(zval *return_value, const zval *class_name)
 			fci.no_separation    = 1;
 			ZVAL_NULL(&fci.function_name);
 
+#if PHP_VERSION_ID < 70300
 			fcc.initialized      = 1;
+#endif
 			fcc.object           = obj;
 			fcc.called_scope     = ce;
 			fcc.calling_scope    = ce;
@@ -1213,7 +1229,9 @@ int zephir_create_instance_params(zval *return_value, const zval *class_name, zv
 			fci.no_separation    = 1;
 			ZVAL_NULL(&fci.function_name);
 
+#if PHP_VERSION_ID < 70300
 			fcc.initialized      = 1;
+#endif
 			fcc.object           = obj;
 			fcc.called_scope     = ce;
 			fcc.calling_scope    = ce;

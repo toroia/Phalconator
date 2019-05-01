@@ -1,11 +1,11 @@
 
 #ifdef HAVE_CONFIG_H
-#include "../ext_config.h"
+#include "../../../ext_config.h"
 #endif
 
 #include <php.h>
-#include "../php_ext.h"
-#include "../ext.h"
+#include "../../../php_ext.h"
+#include "../../../ext.h"
 
 #include <Zend/zend_operators.h>
 #include <Zend/zend_exceptions.h>
@@ -23,15 +23,15 @@
  * file that was distributed with this source code.
  */
 /**
- * Phalconator\Exception
+ * Phalconator\Mvc\Collection\Exception
  *
- * All librarie exceptions should use or extend this exception
+ * Exceptions thrown in Phalconator\Mvc\Collection\* classes will use this class
+ *
  */
-ZEPHIR_INIT_CLASS(Phalconator_Exception) {
+ZEPHIR_INIT_CLASS(Phalconator_Mvc_Collection_Exception) {
 
-	ZEPHIR_REGISTER_CLASS_EX(Phalconator, Exception, phalconator, exception, zend_exception_get_default(TSRMLS_C), NULL, 0);
+	ZEPHIR_REGISTER_CLASS_EX(Phalconator\\Mvc\\Collection, Exception, phalconator, mvc_collection_exception, phalconator_exception_ce, NULL, 0);
 
-	zend_class_implements(phalconator_exception_ce TSRMLS_CC, 1, zephir_get_internal_ce(SL("throwable")));
 	return SUCCESS;
 
 }

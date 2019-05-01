@@ -21,6 +21,14 @@
 
 
 /**
+ * This file is part of the Phalconator extension for Phalcon Framework.
+ *
+ * Copyright (C) Toroia Team <contact@toroia.fr>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
+ */
+/**
  * Phalcon\Cli\Text
  *
  * <p>Phalcon\Cli\Text is simply text</p>
@@ -53,7 +61,7 @@ PHP_METHOD(Phalconator_Cli_Text, __construct) {
 
 
 	if (ZEPHIR_IS_EMPTY(&data)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "phalconator/cli/text.zep", 39);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "phalconator/cli/text.zep", 31);
 		return;
 	}
 	zephir_update_property_zval(this_ptr, SL("_data"), &data);

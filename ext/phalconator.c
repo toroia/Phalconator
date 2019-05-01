@@ -23,12 +23,16 @@
 
 
 
+zend_class_entry *phalconator_mvc_collectioninterface_ce;
+zend_class_entry *phalconator_mvc_entityinterface_ce;
+zend_class_entry *phalconator_mvc_collection_managerinterface_ce;
 zend_class_entry *phalconator_exception_ce;
 zend_class_entry *phalconator_cli_exception_ce;
 zend_class_entry *phalconator_cli_text_ce;
 zend_class_entry *phalconator_cli_text_color_ce;
 zend_class_entry *phalconator_cli_text_menu_ce;
 zend_class_entry *phalconator_mvc_collection_ce;
+zend_class_entry *phalconator_mvc_collection_exception_ce;
 
 ZEND_DECLARE_MODULE_GLOBALS(phalconator)
 
@@ -40,12 +44,16 @@ static PHP_MINIT_FUNCTION(phalconator)
 {
 	REGISTER_INI_ENTRIES();
 	zephir_module_init();
+	ZEPHIR_INIT(Phalconator_Mvc_CollectionInterface);
+	ZEPHIR_INIT(Phalconator_Mvc_EntityInterface);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_ManagerInterface);
 	ZEPHIR_INIT(Phalconator_Exception);
 	ZEPHIR_INIT(Phalconator_Cli_Exception);
 	ZEPHIR_INIT(Phalconator_Cli_Text);
 	ZEPHIR_INIT(Phalconator_Cli_Text_Color);
 	ZEPHIR_INIT(Phalconator_Cli_Text_Menu);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_Exception);
 	
 	return SUCCESS;
 }

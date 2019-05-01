@@ -24,7 +24,7 @@ use Phalcon\Mvc\CollectionInterface;
  *
  * @package Phalconator\Mvc
  */
-abstract class Collection extends CollectionBase implements Unserializable
+abstract class CollectionX extends CollectionBase implements Unserializable
 {
     public function setId($id)
     {

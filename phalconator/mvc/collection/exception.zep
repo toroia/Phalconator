@@ -8,14 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Phalconator;
+namespace Phalconator\Mvc\Collection;
 
 /**
- * Phalconator\Exception
+ * Phalconator\Mvc\Collection\Exception
  *
- * All librarie exceptions should use or extend this exception
+ * Exceptions thrown in Phalconator\Mvc\Collection\* classes will use this class
+ *
  */
-class Exception extends \Exception implements \Throwable
+class Exception extends \Phalconator\Exception
 {
 
 }

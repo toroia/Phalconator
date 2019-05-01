@@ -14,7 +14,7 @@
 #define PHP_PHALCONATOR_VERSION     "0.0.2"
 #define PHP_PHALCONATOR_EXTNAME     "phalconator"
 #define PHP_PHALCONATOR_AUTHOR      "Toroia Team and contributors"
-#define PHP_PHALCONATOR_ZEPVERSION  "0.10.9-10331f595c"
+#define PHP_PHALCONATOR_ZEPVERSION  "0.11.12-$Id$"
 #define PHP_PHALCONATOR_DESCRIPTION "Web extension for Phalcon framework delivered as C-extension"
 
 
