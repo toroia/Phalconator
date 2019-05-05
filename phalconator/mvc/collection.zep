@@ -285,7 +285,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 *	echo $robot->readAttribute("name");
 	 *</code>
 	 */
-	public function readAttribute(string! attribute) -> var | null
+	public function readAttribute(string! attribute)
 	{
 		if !isset this->{attribute} {
 			return null;
@@ -330,12 +330,11 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 *
 	 * @param array params
 	 * @param \MongoDb connection
-	 * @return array
+	 * @return array|self
 	 */
 	protected static function _getResultset(var params, <CollectionInterface> collection, connection, bool unique)
 	{
-		var source, mongoCollection, conditions, base, documentsCursor,
-			fields, skip, limit, sort, document, collections, className, iterator;
+		var source, mongoCollection, conditions, base, fields, documentsCursor, document, className;
 
 		/**
 		 * Check if "class" clause was defined
@@ -374,6 +373,12 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 			if !fetch conditions, params["conditions"] {
 				let conditions = [];
 			}
+		} else {
+			unset(params[0]);
+
+			if isset params["conditions"] {
+				unset(params["conditions"]);
+			}
 		}
 
 		if typeof conditions != "array" {
@@ -381,35 +386,28 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		}
 
 		/**
-		 * Perform the find
+		 * Convert the fields to a projection
 		 */
 		if fetch fields, params["fields"] {
-			let documentsCursor = mongoCollection->find(conditions, fields);
-		} else {
-			let documentsCursor = mongoCollection->find(conditions);
-		}
+			if isset params["projection"] {
+				if typeof params["projection"] != "array" || typeof fields != "array" {
+					throw new Exception("Find projection must be an array");
+				}
 
-		let iterator = new \IteratorIterator(documentsCursor);
+				params["projection"]->merge(fields);
 
-		/**
-		 * Check if a "limit" clause was defined
-		 */
-		if fetch limit, params["limit"] {
-			documentsCursor->limit(limit);
-		}
+			} else {
+				let params["projection"] = fields;
+			}
 
-		/**
-		 * Check if a "sort" clause was defined
-		 */
-		if fetch sort, params["sort"] {
-			documentsCursor->sort(sort);
+			unset(params["fields"]);
 		}
 
 		/**
-		 * Check if a "skip" clause was defined
+		 * Check if a "typeMap" clause was defined or force default
 		 */
-		if fetch skip, params["skip"] {
-			documentsCursor->skip(skip);
+		if !isset params["typeMap"] {
+			let params["typeMap"] = ["root": get_class(base), "document": "array"];
 		}
 
 		if unique === true {
@@ -417,34 +415,21 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 			/**
 			 * Requesting a single result
 			 */
-			iterator->rewind();
+			let document = mongoCollection->findOne(conditions, params);
 
-			let document = iterator->current();
-
-			if !(document instanceof \ArrayObject) {
+			if empty document {
 				return false;
 			}
 
-			/**
-			 * Assign the values to the base object
-			 */
-			return static::cloneResult(base, document);
+			return document;
 		}
 
 		/**
 		 * Requesting a complete resultset
 		 */
-		let collections = [];
+		let documentsCursor = mongoCollection->find(conditions, params);
 
-		for document in iterator_to_array(documentsCursor, false) {
-
-			/**
-			 * Assign the values to the base object
-			 */
-			let collections[] = static::cloneResult(base, document);
-		}
-
-		return collections;
+		return documentsCursor->toArray();
 	}
 
 	/**
@@ -455,7 +440,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 */
 	protected static function _getGroupResultset(params, <Collection> collection, connection) -> int
 	{
-		var source, mongoCollection, conditions, limit, sort, documentsCursor;
+		var source, mongoCollection, conditions;
 
 		let source = collection->getSource();
 		if empty source {
@@ -471,43 +456,15 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 			if !fetch conditions, params["conditions"] {
 				let conditions = [];
 			}
+		} else {
+			unset(params[0]);
+
+			if isset params["conditions"] {
+				unset(params["conditions"]);
+			}
 		}
 
-		if isset params["limit"] || isset params["sort"] || isset params["skip"] {
-
-			/**
-			 * Perform the find
-			 */
-			let documentsCursor = mongoCollection->find(conditions);
-
-			/**
-			 * Check if a "limit" clause was defined
-			 */
-			if fetch limit, params["limit"] {
-				documentsCursor->limit(limit);
-			}
-
-			/**
-			 * Check if a "sort" clause was defined
-			 */
-			if fetch sort, params["sort"] {
-				documentsCursor->sort(sort);
-			}
-
-			/**
-			 * Check if a "skip" clause was defined
-			 */
-			if fetch sort, params["skip"] {
-				documentsCursor->skip(sort);
-			}
-
-			/**
-			 * Only "count" is supported
-			 */
-			return count(documentsCursor);
-		}
-
-		return mongoCollection->count(conditions);
+		return mongoCollection->count(conditions, params);
 	}
 
 	/**
@@ -906,7 +863,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 */
 	public function save() -> bool
 	{
-		var exists, data, success, status, id, ok, collection;
+		var exists, data, success, status, collection;
 
 		let collection = this->prepareCU();
 
@@ -941,18 +898,25 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		 * We always use safe stores to get the success state
 		 * Save the document
 		 */
-		let status = collection->save(data, ["w": true]);
-		if typeof status == "array" {
-			if fetch ok, status["ok"] {
-				if ok {
-					let success = true;
-					if exists === false {
-						if fetch id, data["_id"] {
-							let this->_id = id;
-						}
-						let this->_dirtyState = self::DIRTY_STATE_PERSISTENT;
-					}
-				}
+		switch(this->_operationMade) {
+			case self::OP_CREATE:
+				let status = collection->insertOne(data);
+				break;
+
+			case self::OP_UPDATE:
+				let status = collection->updateOne(["_id": this->_id], ["$set": data]);
+				break;
+
+			default:
+				throw new Exception("Invalid operation requested for " . __METHOD__);
+		}
+
+		if status->isAcknowledged() {
+			let success = true;
+
+			if exists === false {
+				let this->_id = status->getInsertedId();
+				let this->_dirtyState = self::DIRTY_STATE_PERSISTENT;
 			}
 		}
 
@@ -1546,6 +1510,46 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	}
 
 	/**
+	 * Returns the instance as an array representation without bson objects
+	 *
+	 *<code>
+	 * print_r(
+	 *     $robot->toJsonify()
+	 * );
+	 *</code>
+	 */
+	public function toJsonify() -> array
+	{
+		var data, reserved, key, value;
+
+		let reserved = this->getReservedAttributes();
+
+		/**
+		 * Get an array with the values of the object
+		 * We only assign values to the public properties
+		 */
+		let data = [];
+
+		for key, value in get_object_vars(this) {
+			if key == "_id" {
+				if value {
+					let data[key] = strval(value);
+				}
+			} else {
+				if !isset reserved[key] {
+					if typeof value == "object" {
+						let value = strval(value);
+					}
+
+					let data[key] = value;
+				}
+			}
+		}
+
+		return data;
+	}
+
+	/**
 	 * Returns the instance as an array representation
 	 *
 	 *<code>
@@ -1565,6 +1569,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		 * We only assign values to the public properties
 		 */
 		let data = [];
+
 		for key, value in get_object_vars(this) {
 			if key == "_id" {
 				if value {
@@ -1604,14 +1609,6 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		 * Use the standard serialize function to serialize the array data
 		 */
 		return serialize(this->toArray());
-	}
-
-    /**
-	 * Unserializes the object from a serialized string
-	 */
-	public function bsonUnserialize(var data)
-	{
-		this->unserialize(data);
 	}
 
 	/**
@@ -1659,6 +1656,48 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 			for key, value in attributes {
 				let this->{key} = value;
 			}
+		}
+	}
+
+    /**
+	 * {@inheritdoc}
+	 */
+	public function bsonUnserialize(array data)
+	{
+		var dependencyInjector, manager, key, value;
+
+		/**
+		 * Obtain the default DI
+		 */
+		let dependencyInjector = Di::getDefault();
+		if typeof dependencyInjector != "object" {
+			throw new Exception("A dependency injector container is required to obtain the services related to the ORM");
+		}
+
+		/**
+		 * Update the dependency injector
+		 */
+		let this->_dependencyInjector = dependencyInjector;
+
+		let manager = dependencyInjector->getShared("collectionManager");
+		if typeof manager != "object" {
+			throw new Exception("The injected service 'collectionManager' is not valid");
+		}
+
+		/**
+		 * Update the models manager
+		 */
+		let this->_modelsManager = manager;
+
+		/**
+		 * Update the objects attributes
+		 */
+		for key, value in data {
+			let this->{key} = value;
+		}
+
+		if (method_exists(this, "afterFetch")) {
+			this->{"afterFetch"}();
 		}
 	}
 }
