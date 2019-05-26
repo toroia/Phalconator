@@ -47,7 +47,7 @@ final class Bootstrap
     const ENV_PREFIX = 'TWA_';
     const ENV_DELIMITER = '_';
     const ENV_FILE_PATH = '/.env';
-    const API_MODULE_PREFIX = 'ApiModule';
+    const API_MODULE_PREFIX = 'api-module-';
     const MODULES_DEFAULT_PATH = '/src/modules/';
     const ENV_DEFAULT_PATH = '/src/config/env_default.php';
     const SERVICES_DEFAULT_FILE = '/src/config/services_default.php';
