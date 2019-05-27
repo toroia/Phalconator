@@ -13,6 +13,7 @@ namespace Phalconator\Mvc;
 
 use Phalcon\Dispatcher;
 use Phalcon\Mvc\Controller;
+use Phalconator\Exception;
 
 /**
  * Class ControllerApi
@@ -21,21 +22,37 @@ use Phalcon\Mvc\Controller;
  */
 abstract class ControllerApi extends Controller
 {
+    protected $charset = 'UTF-8';
+    protected $contentType = 'application/json';
+
     /**
      * @inheritdoc
+     *
+     * @throws Exception
      */
     public function afterExecuteRoute(Dispatcher $dispatcher)
     {
-        $this->response->setContentType('application/json', 'UTF-8');
+        $content = $dispatcher->getReturnedValue();
 
-        if (is_array($response = $dispatcher->getReturnedValue())) {
+        $this->response->setContentType($this->contentType, $this->charset);
+
+        if (is_array($content)) {
             $requestTime = $this->request->getServer('REQUEST_TIME_FLOAT') ?? STARTTIME;
 
-            $response += [
-                'latency' => round((microtime(true) - $requestTime) * 1000)
-            ];
+            $content += ['latency' => round((microtime(true) - $requestTime) * 1000)];
 
-            $this->response->setJsonContent($response);
+            switch ($this->contentType) {
+                case 'application/json':
+                    $this->response->setJsonContent($content);
+                    break;
+
+                default:
+                    throw new Exception("Le type de contenu retourné n'est pas compatible avec l'api");
+                    break;
+            }
+
+        } else {
+            $this->response->setContent($content);
         }
     }
 }

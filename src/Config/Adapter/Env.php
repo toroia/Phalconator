@@ -31,9 +31,9 @@ class Env extends Config
      * @param string|null $delimiter
      * @throws Exception
      */
-    public function __construct(?string $filePath, ?string $prefix, ?string $delimiter)
+    public function __construct(?string $filePath, ?string $prefix = null, ?string $delimiter = null)
     {
-        if (empty($delimiter)) {
+        if (is_null($delimiter)) {
             $delimiter = self::DEFAULT_DELIMITER;
         }
 
@@ -78,7 +78,7 @@ class Env extends Config
      * @param null|string $delimiter
      * @return array|bool
      */
-    private function parseEnvFile(string $filePath, string $prefix, ?string $delimiter)
+    private function parseEnvFile(string $filePath, ?string $prefix, ?string $delimiter)
     {
         if ($content = file_get_contents($filePath)) {
             $config = [];

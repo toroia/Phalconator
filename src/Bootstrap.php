@@ -15,6 +15,7 @@ use DirectoryIterator;
 use Exception;
 use Phalcon\Application;
 use Phalcon\Config;
+use Phalcon\Config\Adapter\Json;
 use Phalcon\Config\Adapter\Php as PhpConfig;
 use Phalcon\Config\Exception as ExceptionConfig;
 use Phalcon\Di;
@@ -47,7 +48,7 @@ final class Bootstrap
     const ENV_PREFIX = 'TWA_';
     const ENV_DELIMITER = '_';
     const ENV_FILE_PATH = '/.env';
-    const API_MODULE_PREFIX = 'api-module-';
+    const API_MODULE_PREFIX = 'Module';
     const MODULES_DEFAULT_PATH = '/src/modules/';
     const ENV_DEFAULT_PATH = '/src/config/env_default.php';
     const SERVICES_DEFAULT_FILE = '/src/config/services_default.php';
@@ -174,17 +175,27 @@ final class Bootstrap
             if ($module->isDot()) continue;
             if (!$module->isDir()) continue;
 
-            if (($strpos = strpos($module->getBasename(), $this->options['apiModulePrefix'])) !== false) {
-                $moduleName = substr($module->getBasename(), $strpos + strlen($this->options['apiModulePrefix']));
+            $composerModulePath = implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'composer.json']);
 
-                $registeredModules[strtolower($moduleName)] = [
-                    'className' => 'Toroia\Modules\\' . ucfirst($moduleName) . '\Module',
-                    'path' => implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'Module.php'])
-                ];
+            if (file_exists($composerModulePath)) {
+                $composerObject = new Json($composerModulePath);
+
+                if ($composerObject->offsetExists('extra')
+                    && $composerObject->get('extra')->offsetExists('phalconator')
+                    && $composerObject->get('extra')->get('phalconator')->offsetExists('module')) {
+                    $moduleName = $composerObject->get('extra')->get('phalconator')->get('module');
+
+                    $registeredModules[strtolower($moduleName)] = [
+                        'className' => 'Toroia\Modules\\' . ucfirst($moduleName) . '\Module',
+                        'path' => implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'Module.php'])
+                    ];
+                }
             }
 
-            // TODO: Gérer un warning quand un dossier ne contient pas le préfix
+            // TODO: Gérer le fait que le clé module n'existe pas dans la configuration composer
+            // TODO: Gérer le fait que le module doit avoir composer.json
         }
+
         $this->app->registerModules($registeredModules);
 
         return $this;
