@@ -61,7 +61,7 @@ PHP_METHOD(Phalconator_Cli_Text, __construct) {
 
 
 	if (ZEPHIR_IS_EMPTY(&data)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "phalconator/cli/text.zep", 31);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalconator_cli_exception_ce, "Data is required", "/var/www/html/src/modules/Phalconator/phalconator/cli/text.zep", 31);
 		return;
 	}
 	zephir_update_property_zval(this_ptr, SL("_data"), &data);
