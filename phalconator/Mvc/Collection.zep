@@ -334,7 +334,8 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 */
 	protected static function _getResultset(var params, <CollectionInterface> collection, connection, bool unique)
 	{
-		var source, mongoCollection, conditions, base, fields, documentsCursor, document, className;
+		var source, mongoCollection, conditions, base,
+		fields, documentsCursor, document, className, offset;
 
 		/**
 		 * Check if "class" clause was defined
@@ -378,6 +379,12 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 
 			if isset params["conditions"] {
 				unset(params["conditions"]);
+			}
+		}
+
+		if fetch offset, params["offset"] {
+			if !isset(params["skip"]) {
+				let params["skip"] = offset;
 			}
 		}
 
@@ -440,7 +447,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 */
 	protected static function _getGroupResultset(params, <Collection> collection, connection) -> int
 	{
-		var source, mongoCollection, conditions;
+		var source, mongoCollection, conditions, offset;
 
 		let source = collection->getSource();
 		if empty source {
@@ -461,6 +468,12 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 
 			if isset params["conditions"] {
 				unset(params["conditions"]);
+			}
+		}
+
+		if fetch offset, params["offset"] {
+			if !isset(params["skip"]) {
+				let params["skip"] = offset;
 			}
 		}
 
@@ -1405,7 +1418,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	public function delete() -> bool
 	{
 		var disableEvents, status, id, connection, source,
-			collection, objectId, success, ok;
+			collection, objectId, success;
 
 		if !fetch id, this->_id {
 			throw new Exception("The document cannot be deleted because it doesn't exist");
@@ -1453,22 +1466,20 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		/**
 		 * Remove the instance
 		 */
-		let status = collection->remove(["_id": objectId], ["w": true]);
-		if typeof status != "array" {
+		let status = collection->deleteOne(["_id": objectId], ["w": true]);
+		if status->getDeletedCount() === 0 {
 			return false;
 		}
 
 		/**
 		 * Check the operation status
 		 */
-		if fetch ok, status["ok"] {
-			if ok {
-				let success = true;
-				if !disableEvents {
-					this->fireEvent("afterDelete");
-				}
-				let this->_dirtyState = self::DIRTY_STATE_DETACHED;
+		if status->isAcknowledged() {
+			let success = true;
+			if !disableEvents {
+				this->fireEvent("afterDelete");
 			}
+			let this->_dirtyState = self::DIRTY_STATE_DETACHED;
 		} else {
 			let success = false;
 		}
