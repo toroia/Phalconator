@@ -701,7 +701,7 @@ PHP_METHOD(Phalconator_Mvc_Collection, _getResultset) {
 		}
 		_2$$3 = zephir_instance_of_ev(&base, phalconator_mvc_collectioninterface_ce TSRMLS_CC);
 		if (!(_2$$3)) {
-			_2$$3 = zephir_is_instance_of(&base, SL("Phalconator\\Mvc\\Collection\\Document") TSRMLS_CC);
+			_2$$3 = zephir_instance_of_ev(&base, phalconator_mvc_collection_document_ce TSRMLS_CC);
 		}
 		if (!(_2$$3)) {
 			ZEPHIR_INIT_VAR(&_3$$4);
