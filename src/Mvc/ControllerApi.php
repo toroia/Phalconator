@@ -13,7 +13,6 @@ namespace Phalconator\Mvc;
 
 use Phalcon\Dispatcher;
 use Phalcon\Mvc\Controller;
-use Phalconator\Exception;
 use Phalconator\Http\Response\Builder;
 
 /**
@@ -32,43 +31,31 @@ abstract class ControllerApi extends Controller
     /**
      * @inheritDoc
      */
-    public final function beforeExecuteRoute()
+    public function beforeExecuteRoute()
     {
         $this->responseBuilder = new Builder;
-
-        if (method_exists($this, 'beforeExecuteRouteScrud')) {
-            $this->beforeExecuteRouteScrud();
-        }
     }
 
     /**
      * @inheritdoc
-     *
-     * @throws Exception
      */
-    public final function afterExecuteRoute(Dispatcher $dispatcher)
+    public function afterExecuteRoute(Dispatcher $dispatcher)
     {
         $content = $dispatcher->getReturnedValue();
         $this->response->setContentType($this->contentType, $this->charset);
 
         if (is_array($content)) {
-
             switch ($this->contentType) {
                 case 'application/json':
-                    $this->response->setJsonContent($content);
+                    $this->response->setJsonContent($content, JSON_PRETTY_PRINT);
                     break;
 
                 default:
-                    throw new Exception("Le type de contenu retourné n'est pas compatible avec l'api");
+                    $this->response->setJsonContent($this->responseBuilder->error("The API contentType is not supported"));
                     break;
             }
-
         } else {
             $this->response->setContent($content);
-        }
-
-        if (method_exists($this, 'afterExecuteRouteScrud')) {
-            $this->afterExecuteRouteScrud();
         }
     }
 }

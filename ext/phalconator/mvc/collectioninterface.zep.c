@@ -27,10 +27,12 @@
  */
 ZEPHIR_INIT_CLASS(Phalconator_Mvc_CollectionInterface) {
 
-	ZEPHIR_REGISTER_INTERFACE(Phalconator\\Mvc, CollectionInterface, phalconator, mvc_collectioninterface, NULL);
+	ZEPHIR_REGISTER_INTERFACE(Phalconator\\Mvc, CollectionInterface, phalconator, mvc_collectioninterface, phalconator_mvc_collectioninterface_method_entry);
 
 	zend_class_implements(phalconator_mvc_collectioninterface_ce TSRMLS_CC, 1, zephir_get_internal_ce(SL("phalcon\\mvc\\collectioninterface")));
 	return SUCCESS;
 
 }
+
+ZEPHIR_DOC_METHOD(Phalconator_Mvc_CollectionInterface, toJsonify);
 

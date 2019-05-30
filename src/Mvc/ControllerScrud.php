@@ -11,14 +11,21 @@
 
 namespace Phalconator\Mvc;
 
+use MongoDB\BSON\UTCDateTime;
 use Phalcon\Filter;
 use Phalcon\Mvc\ModelInterface;
-use stdClass;
+use Phalconator\Http\Response\StatusCode;
 
 /**
  * Class ControllerScrud
  *
  * @package Phalconator\Mvc
+ * @method void beforeSearch(array $parameters) Effectue des actions avant la recherche
+ * @method void fetchSearch(ModelInterface|CollectionInterface $record) Modifie le retour d'une itération de recherche
+ * @method void beforeCreate(ModelInterface|CollectionInterface $record) Effectue des opérations avant la création
+ * @method void beforeUpdate(ModelInterface|CollectionInterface $record) Effectue des opérations avant la modification
+ * @method array afterCreate(ModelInterface|CollectionInterface $record) Effectue des opérations après la création
+ * @method array afterUpdate(ModelInterface|CollectionInterface $record) Effectue des opérations après la modification
  */
 abstract class ControllerScrud extends ControllerApi implements ControllerScrudInterface
 {
@@ -31,11 +38,11 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
     /**
      * @inheritDoc
      */
-    public final function initialize(): void
+    public function initialize(): void
     {
         if (!isset($this->source) || !class_exists($this->source)) {
             $this->response->setJsonContent(
-                $this->responseBuilder->error("A manufacturing error in the API has occurred", 500)
+                $this->responseBuilder->error("A manufacturing error in the API has occurred")
             );
 
             $this->response->send();
@@ -45,7 +52,7 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
         if (!is_subclass_of($this->source, ModelInterface::class)
             && !is_subclass_of($this->source, CollectionInterface::class)) {
             $this->response->setJsonContent(
-                $this->responseBuilder->error("A manufacturing error in the API has occurredd", 500)
+                $this->responseBuilder->error("A manufacturing error in the API has occurredd")
             );
 
             $this->response->send();
@@ -60,12 +67,11 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
     /**
      * @inheritDoc
      */
-    public final function searchAction(): array
+    public function searchAction(): array
     {
+        $parameters = [];
         $pageIndex = $this->request->get('pageIndex', Filter::FILTER_INT_CAST, 1);
         $rowCount = $this->request->get('rowCount', Filter::FILTER_INT_CAST, $this->defaultRowCount);
-
-        $parameters = new stdClass;
 
         if (method_exists($this, 'beforeSearch')) {
             $this->beforeSearch($parameters);
@@ -73,8 +79,8 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
 
         $total = $this->source::count((array)$parameters);
 
-        $parameters->limit = $rowCount;
-        $parameters->offset = ($pageIndex - 1) * $rowCount;
+        $parameters['limit'] = $rowCount;
+        $parameters['offset'] = ($pageIndex - 1) * $rowCount;
 
         $records = $this->source::find((array)$parameters);
 
@@ -91,15 +97,16 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
             [
                 'rows' => array_map(function ($record) {
                     if (is_object($record)) {
+                        if (method_exists($record, 'toJsonify')) {
+                            return $this->toJsonify($record);
+                        }
+
                         if (method_exists($record, 'toArray')) {
                             return $record->toArray();
                         }
-
                         return get_object_vars($record);
                     }
-
                     return $record;
-
                 }, $records),
                 'total' => $total
             ]
@@ -109,7 +116,50 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
     /**
      * @inheritDoc
      */
-    public final function createAction(): array
+    public function createAction(): array
+    {
+        /** @var ModelInterface|CollectionInterface $record */
+        $record = new $this->source;
+
+        if (!method_exists($this, 'beforeCreate')) {
+            return $this->responseBuilder->error("A manufacturing error in the API has occuzrred");
+        }
+
+        $this->beforeCreate($record);
+
+        if ($record->save()) {
+            if (method_exists($this, 'afterCreate')) {
+                return $this->responseBuilder->success($this->afterCreate($record), StatusCode::CREATED);
+            }
+
+            if (method_exists($record, 'toJsonify')) {
+                return $this->responseBuilder->success($this->toJsonify($record), StatusCode::CREATED);
+            }
+
+            if (method_exists($record, 'toArray')) {
+                return $this->responseBuilder->success($record->toArray(), StatusCode::CREATED);
+            }
+        }
+        return $this->responseBuilder->error($record->getMessages(), StatusCode::BAD_REQUEST);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function readAction(): array
+    {
+        $id = $this->dispatcher->getParam(0, Filter::FILTER_STRING);
+
+        if ($record = $this->source::findById($id)) {
+
+        }
+        return $this->responseBuilder->error("No elements were found", StatusCode::NOT_FOUND);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateAction(): array
     {
 
     }
@@ -117,24 +167,27 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
     /**
      * @inheritDoc
      */
-    public final function readAction(): array
+    public function deleteAction(): array
     {
 
     }
 
     /**
-     * @inheritDoc
+     * Transforme les objets avant la sérialisation en JSON
+     *
+     * @param CollectionInterface $record
+     * @return array
      */
-    public final function updateAction(): array
+    protected function toJsonify($record): array
     {
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public final function deleteAction(): array
-    {
-
+        return $record->toJsonify(function($rec) {
+            if (is_object($rec)) {
+                if ($rec instanceof UTCDateTime) {
+                    return $rec->toDateTime()->format('c');
+                }
+                return strval($rec);
+            }
+            return $rec;
+        });
     }
 }

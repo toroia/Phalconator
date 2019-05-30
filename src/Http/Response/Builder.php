@@ -39,7 +39,7 @@ class Builder extends Injectable
 
         return array_merge([
             'status' => self::SUCCESS,
-            'latency' => round((microtime(true) - $requestTime) * 1000),
+            'latency' => round((microtime(true) - $requestTime) * 1000)
         ], $this->getSuccessMessage($content));
     }
 
@@ -55,11 +55,10 @@ class Builder extends Injectable
         $this->response->setStatusCode($statusCode, StatusCode::message($statusCode));
         $requestTime = $this->request->getServer('REQUEST_TIME_FLOAT') ?? STARTTIME;
 
-        return [
+        return array_merge([
             'status' => self::ERROR,
-            'latency' => round((microtime(true) - $requestTime) * 1000),
-            'messages' => $this->getErrorMessage($content)
-        ];
+            'latency' => round((microtime(true) - $requestTime) * 1000)
+        ], $this->getErrorMessage($content));
     }
 
     /**
@@ -109,9 +108,13 @@ class Builder extends Injectable
                 }
             }
 
-            return $result;
+            return [
+                'messages' => $result
+            ];
         }
 
-        return strval($content) ?? 'A generic error has occurred';
+        return [
+            'message' => strval($content) ?? 'A generic error has occurred'
+        ];
     }
 }

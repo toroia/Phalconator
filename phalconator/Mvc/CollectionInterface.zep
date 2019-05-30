@@ -10,9 +10,6 @@
 
 namespace Phalconator\Mvc;
 
-//use Phalcon\Messages\MessageInterface;
-use Phalcon\Mvc\Model\MessageInterface;
-
 /**
  * Phalcon\Mvc\CollectionInterface
  *
@@ -20,5 +17,5 @@ use Phalcon\Mvc\Model\MessageInterface;
  */
 interface CollectionInterface extends \Phalcon\Mvc\CollectionInterface
 {
-
+	public function toJsonify(var callback) -> array;
 }
