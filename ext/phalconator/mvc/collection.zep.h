@@ -54,11 +54,12 @@ PHP_METHOD(Phalconator_Mvc_Collection, toArray);
 PHP_METHOD(Phalconator_Mvc_Collection, serialize);
 PHP_METHOD(Phalconator_Mvc_Collection, unserialize);
 PHP_METHOD(Phalconator_Mvc_Collection, bsonUnserialize);
+PHP_METHOD(Phalconator_Mvc_Collection, toJsonifyRecursive);
 zend_object *zephir_init_properties_Phalconator_Mvc_Collection(zend_class_entry *class_type TSRMLS_DC);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection___construct, 0, 0, 0)
 	ZEND_ARG_OBJ_INFO(0, dependencyInjector, Phalcon\\DiInterface, 1)
-	ZEND_ARG_OBJ_INFO(0, modelsManager, Phalconator\\Mvc\\Collection\\ManagerInterface, 1)
+	ZEND_ARG_OBJ_INFO(0, modelsManager, Phalcon\\Mvc\\Collection\\ManagerInterface, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_setid, 0, 0, 1)
@@ -77,20 +78,20 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_getdi
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_seteventsmanager, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, eventsManager, Phalconator\\Mvc\\Collection\\ManagerInterface, 0)
+	ZEND_ARG_OBJ_INFO(0, eventsManager, Phalcon\\Mvc\\Collection\\ManagerInterface, 0)
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phalconator_mvc_collection_geteventsmanager, 0, 0, Phalconator\\Mvc\\Collection\\ManagerInterface, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phalconator_mvc_collection_geteventsmanager, 0, 0, Phalcon\\Mvc\\Collection\\ManagerInterface, 0)
 #else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_geteventsmanager, 0, 0, IS_OBJECT, "Phalconator\\Mvc\\Collection\\ManagerInterface", 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_geteventsmanager, 0, 0, IS_OBJECT, "Phalcon\\Mvc\\Collection\\ManagerInterface", 0)
 #endif
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phalconator_mvc_collection_getcollectionmanager, 0, 0, Phalconator\\Mvc\\Collection\\ManagerInterface, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phalconator_mvc_collection_getcollectionmanager, 0, 0, Phalcon\\Mvc\\Collection\\ManagerInterface, 0)
 #else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_getcollectionmanager, 0, 0, IS_OBJECT, "Phalconator\\Mvc\\Collection\\ManagerInterface", 0)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_getcollectionmanager, 0, 0, IS_OBJECT, "Phalcon\\Mvc\\Collection\\ManagerInterface", 0)
 #endif
 ZEND_END_ARG_INFO()
 
@@ -431,6 +432,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_tojso
 #else
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_tojsonify, 0, 0, IS_ARRAY, NULL, 0)
 #endif
+	ZEND_ARG_INFO(0, callback)
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 70200
@@ -453,6 +455,11 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_bsonunserialize, 0, 0, 1)
 	ZEND_ARG_ARRAY_INFO(0, data, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_tojsonifyrecursive, 0, 0, 1)
+	ZEND_ARG_INFO(0, jsonify)
+	ZEND_ARG_INFO(0, callback)
 ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(phalconator_mvc_collection_method_entry) {
@@ -507,5 +514,6 @@ ZEPHIR_INIT_FUNCS(phalconator_mvc_collection_method_entry) {
 	PHP_ME(Phalconator_Mvc_Collection, serialize, arginfo_phalconator_mvc_collection_serialize, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalconator_Mvc_Collection, unserialize, arginfo_phalconator_mvc_collection_unserialize, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalconator_Mvc_Collection, bsonUnserialize, arginfo_phalconator_mvc_collection_bsonunserialize, ZEND_ACC_PUBLIC)
+	PHP_ME(Phalconator_Mvc_Collection, toJsonifyRecursive, arginfo_phalconator_mvc_collection_tojsonifyrecursive, ZEND_ACC_PROTECTED)
 	PHP_FE_END
 };

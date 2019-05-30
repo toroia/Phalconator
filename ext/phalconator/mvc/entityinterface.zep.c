@@ -27,19 +27,10 @@
  */
 ZEPHIR_INIT_CLASS(Phalconator_Mvc_EntityInterface) {
 
-	ZEPHIR_REGISTER_INTERFACE(Phalconator\\Mvc, EntityInterface, phalconator, mvc_entityinterface, phalconator_mvc_entityinterface_method_entry);
+	ZEPHIR_REGISTER_INTERFACE(Phalconator\\Mvc, EntityInterface, phalconator, mvc_entityinterface, NULL);
 
+	zend_class_implements(phalconator_mvc_entityinterface_ce TSRMLS_CC, 1, zephir_get_internal_ce(SL("phalcon\\mvc\\entityinterface")));
 	return SUCCESS;
 
 }
-
-/**
- * Reads an attribute value by its name
- */
-ZEPHIR_DOC_METHOD(Phalconator_Mvc_EntityInterface, readAttribute);
-
-/**
- * Writes an attribute value by its name
- */
-ZEPHIR_DOC_METHOD(Phalconator_Mvc_EntityInterface, writeAttribute);
 

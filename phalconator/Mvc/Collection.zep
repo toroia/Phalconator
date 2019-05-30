@@ -22,8 +22,8 @@ use Phalcon\Mvc\Collection\Document;
 use Phalcon\Mvc\Model\MessageInterface;
 use Phalcon\Mvc\Model\Message as Message;
 use Phalcon\ValidationInterface;
-use Phalconator\Mvc\Collection\Exception;
-use Phalconator\Mvc\Collection\ManagerInterface;
+use Phalcon\Mvc\Collection\Exception;
+use Phalcon\Mvc\Collection\ManagerInterface;
 
 /**
  * Phalconator\Mvc\Collection
@@ -1529,7 +1529,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 * );
 	 *</code>
 	 */
-	public function toJsonify() -> array
+	public function toJsonify(var callback = null) -> array
 	{
 		var data, reserved, key, value;
 
@@ -1548,11 +1548,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 				}
 			} else {
 				if !isset reserved[key] {
-					if typeof value == "object" {
-						let value = strval(value);
-					}
-
-					let data[key] = value;
+					let data[key] = this->toJsonifyRecursive(value, callback);
 				}
 			}
 		}
@@ -1710,5 +1706,27 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		if (method_exists(this, "afterFetch")) {
 			this->{"afterFetch"}();
 		}
+	}
+
+	/**
+	 * Iterate recursively to modify the return values
+	 */
+	protected function toJsonifyRecursive(var jsonify, var callback = null)
+	{
+		var key, value;
+
+		if typeof jsonify == "object" {
+			if is_callable(callback) {
+				let jsonify = {callback}(jsonify);
+			} else {
+				let jsonify = strval(jsonify);
+			}
+		} elseif typeof jsonify == "array" {
+			for key, value in jsonify {
+				let jsonify[key] = this->toJsonifyRecursive(value, callback);
+			}
+		}
+
+		return jsonify;
 	}
 }
