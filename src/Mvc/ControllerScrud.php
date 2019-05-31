@@ -11,6 +11,7 @@
 
 namespace Phalconator\Mvc;
 
+use DateTime;
 use MongoDB\BSON\UTCDateTime;
 use Phalcon\Filter;
 use Phalcon\Mvc\ModelInterface;
@@ -21,11 +22,11 @@ use Phalconator\Http\Response\StatusCode;
  *
  * @package Phalconator\Mvc
  * @method void beforeSearch(array $parameters) Effectue des actions avant la recherche
- * @method void fetchSearch(ModelInterface|CollectionInterface $record) Modifie le retour d'une itération de recherche
- * @method void beforeCreate(ModelInterface|CollectionInterface $record) Effectue des opérations avant la création
- * @method void beforeUpdate(ModelInterface|CollectionInterface $record) Effectue des opérations avant la modification
- * @method array afterCreate(ModelInterface|CollectionInterface $record) Effectue des opérations après la création
- * @method array afterUpdate(ModelInterface|CollectionInterface $record) Effectue des opérations après la modification
+ * @method void fetchSearch(ModelInterface | CollectionInterface $record) Modifie le retour d'une itération de recherche
+ * @method void beforeCreate(ModelInterface | CollectionInterface $record) Effectue des opérations avant la création
+ * @method void beforeUpdate(ModelInterface | CollectionInterface $record) Effectue des opérations avant la modification
+ * @method array afterCreate(ModelInterface | CollectionInterface $record) Effectue des opérations après la création
+ * @method array afterUpdate(ModelInterface | CollectionInterface $record) Effectue des opérations après la modification
  */
 abstract class ControllerScrud extends ControllerApi implements ControllerScrudInterface
 {
@@ -180,10 +181,10 @@ abstract class ControllerScrud extends ControllerApi implements ControllerScrudI
      */
     protected function toJsonify($record): array
     {
-        return $record->toJsonify(function($rec) {
+        return $record->toJsonify(function ($rec) {
             if (is_object($rec)) {
                 if ($rec instanceof UTCDateTime) {
-                    return $rec->toDateTime()->format('c');
+                    return $rec->toDateTime()->format(DateTime::ISO8601);
                 }
                 return strval($rec);
             }
