@@ -22,26 +22,8 @@ use Phalcon\Validation\MessageInterface as ValidationMessageInterface;
  */
 class Builder extends Injectable
 {
-    const SUCCESS = 'SUCCESS';
-    const ERROR = 'ERROR';
-
-    /**
-     * Génère un réponse en succès
-     *
-     * @param mixed $content
-     * @param int $statusCode
-     * @return array
-     */
-    public function success($content = null, int $statusCode = 200)
-    {
-        $this->response->setStatusCode($statusCode, StatusCode::message($statusCode));
-        $requestTime = $this->request->getServer('REQUEST_TIME_FLOAT') ?? STARTTIME;
-
-        return array_merge([
-            'status' => self::SUCCESS,
-            'latency' => round((microtime(true) - $requestTime) * 1000)
-        ], $this->getSuccessMessage($content));
-    }
+    protected $stateError = 'ERROR';
+    protected $stateSuccess = 'SUCCESS';
 
     /**
      * Génère une réponse en erreur
@@ -50,15 +32,63 @@ class Builder extends Injectable
      * @param int $statusCode
      * @return array
      */
-    public function error($content = null, int $statusCode = 500)
+    public function error($content = null, int $statusCode = 500): array
     {
-        $this->response->setStatusCode($statusCode, StatusCode::message($statusCode));
-        $requestTime = $this->request->getServer('REQUEST_TIME_FLOAT') ?? STARTTIME;
+        $this->getDI()->get('response')->setStatusCode($statusCode, StatusCode::message($statusCode));
 
         return array_merge([
-            'status' => self::ERROR,
-            'latency' => round((microtime(true) - $requestTime) * 1000)
+            'status' => $this->getStateError(),
+            'latency' => round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000)
         ], $this->getErrorMessage($content));
+    }
+
+    /**
+     * Génère un réponse en succès
+     *
+     * @param mixed $content
+     * @param int $statusCode
+     * @return array
+     */
+    public function success($content = null, int $statusCode = 200): array
+    {
+        $this->getDI()->get('response')->setStatusCode($statusCode, StatusCode::message($statusCode));
+
+        return array_merge([
+            'status' => $this->getStateSuccess(),
+            'latency' => round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000)
+        ], $this->getSuccessMessage($content));
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateError(): string
+    {
+        return $this->stateError;
+    }
+
+    /**
+     * @param string $stateError
+     */
+    public function setStateError(string $stateError): void
+    {
+        $this->stateError = $stateError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateSuccess(): string
+    {
+        return $this->stateSuccess;
+    }
+
+    /**
+     * @param string $stateSuccess
+     */
+    public function setStateSuccess(string $stateSuccess): void
+    {
+        $this->stateSuccess = $stateSuccess;
     }
 
     /**

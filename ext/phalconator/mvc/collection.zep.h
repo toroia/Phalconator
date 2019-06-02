@@ -43,6 +43,7 @@ PHP_METHOD(Phalconator_Mvc_Collection, findFirst);
 PHP_METHOD(Phalconator_Mvc_Collection, find);
 PHP_METHOD(Phalconator_Mvc_Collection, count);
 PHP_METHOD(Phalconator_Mvc_Collection, aggregate);
+PHP_METHOD(Phalconator_Mvc_Collection, gridfs);
 PHP_METHOD(Phalconator_Mvc_Collection, summatory);
 PHP_METHOD(Phalconator_Mvc_Collection, delete);
 PHP_METHOD(Phalconator_Mvc_Collection, setDirtyState);
@@ -334,19 +335,11 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_updat
 #endif
 ZEND_END_ARG_INFO()
 
-#if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phalconator_mvc_collection_findbyid, 0, 1, Phalconator\\Mvc\\CollectionInterface, 1)
-#else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_findbyid, 0, 1, IS_OBJECT, "Phalconator\\Mvc\\CollectionInterface", 1)
-#endif
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_findbyid, 0, 0, 1)
 	ZEND_ARG_INFO(0, id)
 ZEND_END_ARG_INFO()
 
-#if PHP_VERSION_ID >= 70200
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_findfirst, 0, 0, IS_ARRAY, 0)
-#else
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phalconator_mvc_collection_findfirst, 0, 0, IS_ARRAY, NULL, 0)
-#endif
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phalconator_mvc_collection_findfirst, 0, 0, 0)
 	ZEND_ARG_ARRAY_INFO(0, parameters, 1)
 ZEND_END_ARG_INFO()
 
@@ -503,6 +496,7 @@ ZEPHIR_INIT_FUNCS(phalconator_mvc_collection_method_entry) {
 	PHP_ME(Phalconator_Mvc_Collection, find, arginfo_phalconator_mvc_collection_find, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Phalconator_Mvc_Collection, count, arginfo_phalconator_mvc_collection_count, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Phalconator_Mvc_Collection, aggregate, arginfo_phalconator_mvc_collection_aggregate, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Phalconator_Mvc_Collection, gridfs, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Phalconator_Mvc_Collection, summatory, arginfo_phalconator_mvc_collection_summatory, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Phalconator_Mvc_Collection, delete, arginfo_phalconator_mvc_collection_delete, ZEND_ACC_PUBLIC)
 	PHP_ME(Phalconator_Mvc_Collection, setDirtyState, arginfo_phalconator_mvc_collection_setdirtystate, ZEND_ACC_PUBLIC)

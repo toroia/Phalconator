@@ -267,7 +267,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	/**
 	 * Retrieves a database connection
 	 *
-	 * @return \MongoDb
+	 * @return \MongoDB\Database
 	 */
 	public function getConnection()
 	{
@@ -1162,7 +1162,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 * }
 	 * </code>
 	 */
-	public static function findById(var id) -> <CollectionInterface> | null
+	public static function findById(var id)
 	{
 		var className, collection, objectId;
 
@@ -1237,7 +1237,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 * echo "The robot id is ", $robot->_id, "\n";
 	 * </code>
 	 */
-	public static function findFirst(array parameters = null) -> array
+	public static function findFirst(array! parameters = null)
 	{
 		var className, collection, connection;
 
@@ -1304,7 +1304,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 * }
 	 * </code>
 	 */
-	public static function find(array parameters = null) -> array
+	public static function find(array! parameters = null) -> array
 	{
 		var className, collection;
 
@@ -1320,7 +1320,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	 * echo "There are ", Robots::count(), " robots";
 	 *</code>
 	 */
-	public static function count(array parameters = null) -> int
+	public static function count(array! parameters = null) -> int
 	{
 		var className, collection, connection;
 
@@ -1336,7 +1336,7 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 	/**
 	 * Perform an aggregation using the Mongo aggregation framework
 	 */
-	public static function aggregate(array parameters = null, array options = null) -> array
+	public static function aggregate(array! parameters = null, array! options = null) -> array
 	{
 		var className, model, connection, source;
 
@@ -1352,6 +1352,24 @@ abstract class Collection implements EntityInterface, CollectionInterface, Injec
 		}
 
 		return connection->selectCollection(source)->aggregate(parameters, options);
+	}
+
+	/**
+	 * Select the bucket
+	 *
+	 * @return \MongoDB\GridFS\Bucket
+	 */
+	public static function gridfs()
+	{
+		var className, model, connection;
+
+		let className = get_called_class();
+
+		let model = new {className}();
+
+		let connection = model->getConnection();
+
+		return connection->selectGridFSBucket();
 	}
 
 	/**

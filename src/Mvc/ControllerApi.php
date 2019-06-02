@@ -13,7 +13,6 @@ namespace Phalconator\Mvc;
 
 use Phalcon\Dispatcher;
 use Phalcon\Mvc\Controller;
-use Phalconator\Http\Response\Builder;
 
 /**
  * Class ControllerApi
@@ -22,24 +21,13 @@ use Phalconator\Http\Response\Builder;
  */
 abstract class ControllerApi extends Controller
 {
-    /** @var Builder $responseBuilder */
-    protected $responseBuilder;
-
     protected $charset = 'UTF-8';
     protected $contentType = 'application/json';
 
     /**
-     * @inheritDoc
-     */
-    public function beforeExecuteRoute()
-    {
-        $this->responseBuilder = new Builder;
-    }
-
-    /**
      * @inheritdoc
      */
-    public function afterExecuteRoute(Dispatcher $dispatcher)
+    public final function afterExecuteRoute(Dispatcher $dispatcher)
     {
         $content = $dispatcher->getReturnedValue();
         $this->response->setContentType($this->contentType, $this->charset);

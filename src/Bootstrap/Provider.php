@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Phalconator;
+namespace Phalconator\Bootstrap;
 
-use Exception;
+use Phalcon\Di;
 use Phalcon\Di\ServiceProviderInterface;
 use Phalcon\DiInterface;
 use ReflectionClass;
@@ -24,7 +24,7 @@ use ReflectionException;
  */
 class Provider
 {
-    /** @var \Phalcon\Di $di */
+    /** @var Di $di */
     protected $di;
 
     /** @var array $services */
@@ -57,14 +57,10 @@ class Provider
                     $this->services[] = $service;
                 }
 
-                // TODO: Gérer le fait que le service soit mal construit et n'"implémente pas l'interface
-
             } catch (ReflectionException $e) {
-
                 throw new Exception("L'application na pas pu démarrer, le service <$service> est mal implémenté.");
             }
         }
-
         return $this;
     }
 
@@ -74,7 +70,6 @@ class Provider
     public function register(): void
     {
         foreach ($this->services as $service) {
-
             $this->di->register(new $service);
         }
     }

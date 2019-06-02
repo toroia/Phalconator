@@ -12,16 +12,13 @@
 namespace Phalconator;
 
 use DirectoryIterator;
-use Exception;
 use Phalcon\Application;
 use Phalcon\Config;
 use Phalcon\Config\Adapter\Json;
-use Phalcon\Config\Adapter\Php as PhpConfig;
-use Phalcon\Config\Exception as ExceptionConfig;
-use Phalcon\Di;
+use Phalcon\Di\ServiceProviderInterface;
 use Phalcon\DiInterface;
-use Phalconator\Config\Adapter\Env as EnvConfig;
-use function implode;
+use Phalconator\Bootstrap\Exception;
+use Phalconator\Bootstrap\Provider;
 
 /**
  * Class Bootstrap
@@ -30,16 +27,19 @@ use function implode;
  */
 final class Bootstrap
 {
-    /** @var DiInterface $di */
-    protected $di;
-
     /** @var string $basePath */
     protected $basePath;
+
+    /** @var DiInterface $di */
+    protected $di;
 
     /** @var Application $app */
     protected $app;
 
-    /** @var Config $services */
+    /** @var Config $config */
+    protected $config;
+
+    /** @var array $services */
     protected $services;
 
     /** @var array $options */
@@ -57,19 +57,10 @@ final class Bootstrap
      * Bootstrap constructor.
      *
      * @param string $basePath
-     * @param Application $app
-     * @param Config $services
-     * @param array $options
      */
-    public function __construct(string $basePath, Application $app, ?Config $services, array $options = [])
+    public function __construct(string $basePath)
     {
-        defined('STARTTIME') OR define('STARTTIME', microtime(true));
-
-        $this->di = new Di;
-
         $this->basePath = $basePath;
-        $this->app = $app;
-        $this->services = $services;
 
         $this->options = array_merge([
             'envPrefix' => self::ENV_PREFIX,
@@ -79,103 +70,115 @@ final class Bootstrap
             'apiModulePrefix' => self::API_MODULE_PREFIX,
             'modulesDefaultPath' => self::MODULES_DEFAULT_PATH,
             'servicesDefaultFile' => self::SERVICES_DEFAULT_FILE
-        ], $options);
+        ], []);
+    }
+
+    /**
+     * Définit le di du bootstrap
+     *
+     * @param DiInterface $di
+     */
+    public function setDI(DiInterface $di): void
+    {
+        $this->di = $di;
+    }
+
+    /**
+     * Définit l'application du bootstrap
+     *
+     * @param Application $app
+     */
+    public function setApp(Application $app): void
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * Définit les services de l'application
+     *
+     * @param ServiceProviderInterface[] $services
+     */
+    public function setServices($services): void
+    {
+        $this->services = [];
+
+        if ($services instanceof Config) {
+            $services = $services->toArray();
+        }
+
+        foreach ($services as $service) {
+            if (is_subclass_of($service, ServiceProviderInterface::class)) {
+                $this->services[] = $service;
+            }
+        }
+    }
+
+    /**
+     * Définit la configuration de l'application
+     *
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
     }
 
     /**
      * Démarre l'application
      *
      * @return Application
+     * @throws Exception
      */
     public function run(): Application
     {
-        $this->configureApplication();
-        $this->importProviders();
-
-        if (!is_null($this->services)) {
-            $this->registerModules();
+        if (!$this->di instanceof DiInterface) {
+            throw new Exception("Bootstrap does not implement DI");
         }
+
+        if (!$this->app instanceof Application) {
+            throw new Exception("Bootstrap does not implement Application");
+        }
+
+        if (empty($this->services)) {
+            throw new Exception("Bootstrap has no configured services");
+        }
+
+        $this->di->setShared('config', $this->config);
+
+        (new Provider($this->di))
+            ->load($this->services)
+            ->register();
 
         $this->app->setDI($this->di);
         return $this->app;
     }
 
     /**
-     * Configure l'application
-     *
-     * @return self
-     */
-    protected function configureApplication(): self
-    {
-        $basePath = $this->basePath;
-        $options = $this->options;
-
-        $this->di->setShared('config', function () use ($basePath, $options) {
-            $configPath = implode(DIRECTORY_SEPARATOR, [$basePath, $options['envDefaultPath']]);
-
-            $config = new PhpConfig($configPath);
-
-            try {
-                $envPath = implode(DIRECTORY_SEPARATOR, [$basePath, $options['envFilePath']]);
-
-                if (file_exists($envPath)) {
-                    $envConfig = new EnvConfig($envPath, $options['envPrefix'], $options['envDelimiter']);
-                    $config->merge($envConfig);
-                }
-
-                // TODO: Gérer un warning log pour prévenir que l'application n'utilise pas de fichier de configuration
-
-            } catch (ExceptionConfig $e) {
-                //TODO: Gérer l'exception de configuration
-            }
-
-            return $config;
-        });
-
-        return $this;
-    }
-
-    /**
-     * Importe les providers
-     *
-     * @return self
-     */
-    protected function importProviders(): self
-    {
-        $providerPath = implode(DIRECTORY_SEPARATOR, [$this->basePath, $this->options['servicesDefaultFile']]);
-
-        $providerServices = new PhpConfig($providerPath);
-        $providerServices->merge($this->services);
-
-        // TODO: Gérer un warning pour prévenir que l'application n'implémente pas de service personalisés
-
-        try {
-            (new Provider($this->di))
-                ->load($providerServices->toArray())
-                ->register();
-
-        } catch (Exception $e) {
-            //TODO: Gérer l'exception de génération du provider
-        }
-
-        return $this;
-    }
-
-    /**
      * Enregistre les modules au sein de l'application
      *
-     * @return self
+     * @param string|null $path
+     * @throws Exception
      */
-    protected function registerModules(): self
+    public function registerModules(?string $path = null): void
     {
         $registeredModules = [];
-        $modulesPath = implode(DIRECTORY_SEPARATOR, [$this->basePath, $this->options['modulesDefaultPath']]);
+        $modulesPath = $this->basePath . DIRECTORY_SEPARATOR . $path;
+        $modules = new DirectoryIterator($modulesPath);
 
-        foreach (new DirectoryIterator($modulesPath) as $module) {
+        if (!$this->app instanceof Application) {
+            throw new Exception("Bootstrap does not implement Application");
+        }
+
+        if (!$modules->isDir()) {
+            throw new Exception("Bootstrap cannot access to modules");
+        }
+
+        foreach ($modules as $module) {
             if ($module->isDot()) continue;
             if (!$module->isDir()) continue;
 
-            $composerModulePath = implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'composer.json']);
+            $moduleName = $module->getFilename();
+            $composerModulePath = $module->getRealPath() . DIRECTORY_SEPARATOR . 'composer.json';
 
             if (file_exists($composerModulePath)) {
                 $composerObject = new Json($composerModulePath);
@@ -184,20 +187,15 @@ final class Bootstrap
                     && $composerObject->get('extra')->offsetExists('phalconator')
                     && $composerObject->get('extra')->get('phalconator')->offsetExists('module')) {
                     $moduleName = $composerObject->get('extra')->get('phalconator')->get('module');
-
-                    $registeredModules[strtolower($moduleName)] = [
-                        'className' => 'Toroia\Modules\\' . ucfirst($moduleName) . '\Module',
-                        'path' => implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'Module.php'])
-                    ];
                 }
             }
 
-            // TODO: Gérer le fait que le clé module n'existe pas dans la configuration composer
-            // TODO: Gérer le fait que le module doit avoir composer.json
+            $registeredModules[strtolower($moduleName)] = [
+                'className' => 'Toroia\Modules\\' . ucfirst($moduleName) . '\Module',
+                'path' => implode(DIRECTORY_SEPARATOR, [$module->getRealPath(), 'Module.php'])
+            ];
         }
 
         $this->app->registerModules($registeredModules);
-
-        return $this;
     }
 }
