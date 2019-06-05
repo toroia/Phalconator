@@ -16,7 +16,6 @@ use MongoDB\BSON\UTCDateTime;
 use Phalcon\Di;
 use Phalcon\Di\Injectable;
 use Phalcon\DiInterface;
-use Phalcon\Filter;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\ModelInterface;
 use Phalconator\Http\Response\StatusCode;
@@ -60,8 +59,8 @@ trait ControllerScrudTrait
         $request = $this->getDI()->get('request');
         $responseBuilder = $this->getDI()->get('responseBuilder');
 
-        $pageIndex = $request->get('pageIndex', Filter::FILTER_INT_CAST, 1);
-        $rowCount = $request->get('rowCount', Filter::FILTER_INT_CAST, $this->defaultRowCount);
+        $pageIndex = $request->get('pageIndex', 'int', 1);
+        $rowCount = $request->get('rowCount', 'int', $this->defaultRowCount);
 
         if (method_exists($this, 'beforeSearch')) {
             $this->beforeSearch($parameters);
@@ -141,7 +140,7 @@ trait ControllerScrudTrait
         $responseBuilder = $this->getDI()->get('responseBuilder');
         $dispatcher = $this->getDI()->get('dispatcher');
 
-        $id = $dispatcher->getParam(0, Filter::FILTER_STRING);
+        $id = $dispatcher->getParam(0, 'string');
 
         /** @var ModelInterface|Model|CollectionInterface|Collection $record */
         if ($record = $this->source::findById($id)) {
@@ -165,7 +164,7 @@ trait ControllerScrudTrait
         $responseBuilder = $this->getDI()->get('responseBuilder');
         $dispatcher = $this->getDI()->get('dispatcher');
 
-        $id = $dispatcher->getParam(0, Filter::FILTER_STRING);
+        $id = $dispatcher->getParam(0, 'string');
 
         /** @var ModelInterface|Model|CollectionInterface|Collection $record */
         if ($record = $this->source::findById($id)) {
@@ -177,6 +176,8 @@ trait ControllerScrudTrait
                 }
                 $this->beforeCreate($record);
             }
+
+//            die(var_dump($record));
 
             if ($record->save()) {
                 if (method_exists($this, 'afterUpdate')) {
@@ -204,7 +205,7 @@ trait ControllerScrudTrait
         $responseBuilder = $this->getDI()->get('responseBuilder');
         $dispatcher = $this->getDI()->get('dispatcher');
 
-        $id = $dispatcher->getParam(0, Filter::FILTER_STRING);
+        $id = $dispatcher->getParam(0, 'string');
 
         /** @var ModelInterface|Model|CollectionInterface|Collection $record */
         if ($record = $this->source::findById($id)) {
@@ -228,6 +229,7 @@ trait ControllerScrudTrait
      */
     protected function toJsonify($record): array
     {
+        return $record->toArray();
         return $record->toJsonify(function ($rec) {
             if (is_object($rec)) {
                 if ($rec instanceof UTCDateTime) {

@@ -16,5 +16,6 @@
 #include "phalconator/mvc/collection/document.zep.h"
 #include "phalconator/mvc/collection/exception.zep.h"
 #include "phalconator/mvc/collection/managerinterface.zep.h"
+#include "phalconator/validation/validator/password.zep.h"
 
 #endif
