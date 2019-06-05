@@ -1060,10 +1060,11 @@ PHP_METHOD(Phalconator_Mvc_Collection, _postSave) {
  */
 PHP_METHOD(Phalconator_Mvc_Collection, validate) {
 
+	zend_class_entry *_3$$4 = NULL;
 	zend_object_iterator *_1;
-	zephir_fcall_cache_entry *_8 = NULL, *_9 = NULL;
+	zephir_fcall_cache_entry *_9 = NULL;
 	zend_long ZEPHIR_LAST_CALL_STATUS;
-	zval *validator, validator_sub, messages, message, _0, _2$$4, _3$$4, _4$$4, _5$$4, _6$$4, _7$$4;
+	zval *validator, validator_sub, messages, message, _0, _2$$4, _4$$4, _5$$4, _6$$4, _7$$4, _8$$4;
 	zval *this_ptr = getThis();
 
 	ZVAL_UNDEF(&validator_sub);
@@ -1071,11 +1072,11 @@ PHP_METHOD(Phalconator_Mvc_Collection, validate) {
 	ZVAL_UNDEF(&message);
 	ZVAL_UNDEF(&_0);
 	ZVAL_UNDEF(&_2$$4);
-	ZVAL_UNDEF(&_3$$4);
 	ZVAL_UNDEF(&_4$$4);
 	ZVAL_UNDEF(&_5$$4);
 	ZVAL_UNDEF(&_6$$4);
 	ZVAL_UNDEF(&_7$$4);
+	ZVAL_UNDEF(&_8$$4);
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 0, &validator);
@@ -1095,18 +1096,23 @@ PHP_METHOD(Phalconator_Mvc_Collection, validate) {
 			ZEPHIR_ITERATOR_COPY(&message, _1);
 		}
 		ZEPHIR_INIT_NVAR(&_2$$4);
-		object_init_ex(&_2$$4, zephir_get_internal_ce(SL("phalcon\\mvc\\model\\message")));
-		ZEPHIR_CALL_METHOD(&_3$$4, &message, "getmessage", NULL, 0);
-		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(&_4$$4, &message, "getfield", NULL, 0);
-		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(&_5$$4, &message, "gettype", NULL, 0);
-		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(&_6$$4, &message, "getcode", NULL, 0);
-		zephir_check_call_status();
-		ZVAL_NULL(&_7$$4);
-		ZEPHIR_CALL_METHOD(NULL, &_2$$4, "__construct", &_8, 0, &_3$$4, &_4$$4, &_5$$4, &_7$$4, &_6$$4);
-		zephir_check_call_status();
+		if (!_3$$4) {
+		_3$$4 = zephir_fetch_class_str_ex(SL("Phalcon\\Mvc\\Model\\Message"), ZEND_FETCH_CLASS_AUTO);
+		}
+		object_init_ex(&_2$$4, _3$$4);
+		if (zephir_has_constructor(&_2$$4 TSRMLS_CC)) {
+			ZEPHIR_CALL_METHOD(&_4$$4, &message, "getmessage", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&_5$$4, &message, "getfield", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&_6$$4, &message, "gettype", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&_7$$4, &message, "getcode", NULL, 0);
+			zephir_check_call_status();
+			ZVAL_NULL(&_8$$4);
+			ZEPHIR_CALL_METHOD(NULL, &_2$$4, "__construct", NULL, 0, &_4$$4, &_5$$4, &_6$$4, &_8$$4, &_7$$4);
+			zephir_check_call_status();
+		}
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "appendmessage", &_9, 0, &_2$$4);
 		zephir_check_call_status();
 	}
@@ -1684,9 +1690,10 @@ PHP_METHOD(Phalconator_Mvc_Collection, create) {
  */
 PHP_METHOD(Phalconator_Mvc_Collection, createIfNotExist) {
 
+	zend_class_entry *_12$$8 = NULL;
 	zend_bool exists = 0, success = 0;
 	zend_long ZEPHIR_LAST_CALL_STATUS;
-	zval *criteria_param = NULL, __$false, __$true, data, keys, query, status, doc, collection, _0, _1, _2, _3, _4, _5, _8, _13, _14, _9$$7, _10$$7, _11$$8, _12$$8;
+	zval *criteria_param = NULL, __$false, __$true, data, keys, query, status, doc, collection, _0, _1, _2, _3, _4, _5, _8, _14, _15, _9$$7, _10$$7, _11$$8, _13$$8;
 	zval criteria, _6, _7;
 	zval *this_ptr = getThis();
 
@@ -1708,12 +1715,12 @@ PHP_METHOD(Phalconator_Mvc_Collection, createIfNotExist) {
 	ZVAL_UNDEF(&_4);
 	ZVAL_UNDEF(&_5);
 	ZVAL_UNDEF(&_8);
-	ZVAL_UNDEF(&_13);
 	ZVAL_UNDEF(&_14);
+	ZVAL_UNDEF(&_15);
 	ZVAL_UNDEF(&_9$$7);
 	ZVAL_UNDEF(&_10$$7);
 	ZVAL_UNDEF(&_11$$8);
-	ZVAL_UNDEF(&_12$$8);
+	ZVAL_UNDEF(&_13$$8);
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 0, &criteria_param);
@@ -1782,26 +1789,31 @@ PHP_METHOD(Phalconator_Mvc_Collection, createIfNotExist) {
 		}
 	} else {
 		ZEPHIR_INIT_VAR(&_11$$8);
-		object_init_ex(&_11$$8, zephir_get_internal_ce(SL("phalcon\\mvc\\model\\message")));
-		ZEPHIR_INIT_VAR(&_12$$8);
-		ZVAL_STRING(&_12$$8, "Document already exists");
-		ZEPHIR_CALL_METHOD(NULL, &_11$$8, "__construct", NULL, 0, &_12$$8);
-		zephir_check_call_status();
+		if (!_12$$8) {
+		_12$$8 = zephir_fetch_class_str_ex(SL("Phalcon\\Mvc\\Model\\Message"), ZEND_FETCH_CLASS_AUTO);
+		}
+		object_init_ex(&_11$$8, _12$$8);
+		if (zephir_has_constructor(&_11$$8 TSRMLS_CC)) {
+			ZEPHIR_INIT_VAR(&_13$$8);
+			ZVAL_STRING(&_13$$8, "Document already exists");
+			ZEPHIR_CALL_METHOD(NULL, &_11$$8, "__construct", NULL, 0, &_13$$8);
+			zephir_check_call_status();
+		}
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "appendmessage", NULL, 0, &_11$$8);
 		zephir_check_call_status();
 	}
 	zephir_read_static_property_ce(&_8, phalconator_mvc_collection_ce, SL("_disableEvents"), PH_NOISY_CC | PH_READONLY);
 	if (success) {
-		ZVAL_BOOL(&_13, 1);
-	} else {
-		ZVAL_BOOL(&_13, 0);
-	}
-	if (exists) {
 		ZVAL_BOOL(&_14, 1);
 	} else {
 		ZVAL_BOOL(&_14, 0);
 	}
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "_postsave", NULL, 6, &_8, &_13, &_14);
+	if (exists) {
+		ZVAL_BOOL(&_15, 1);
+	} else {
+		ZVAL_BOOL(&_15, 0);
+	}
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "_postsave", NULL, 6, &_8, &_14, &_15);
 	zephir_check_call_status();
 	RETURN_MM();
 

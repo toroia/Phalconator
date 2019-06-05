@@ -15,6 +15,7 @@ if (PHP_PHALCONATOR != "no") {
 	ADD_SOURCES(configure_module_dirname + "/phalconator/mvc", "collectioninterface.zep.c entityinterface.zep.c collection.zep.c", "phalconator");
 	ADD_SOURCES(configure_module_dirname + "/phalconator/cli", "exception.zep.c text.zep.c", "phalconator");
 	ADD_SOURCES(configure_module_dirname + "/phalconator/cli/text", "color.zep.c menu.zep.c", "phalconator");
+	ADD_SOURCES(configure_module_dirname + "/phalconator/validation/validator", "password.zep.c", "phalconator");
   ADD_FLAG("CFLAGS_PHALCONATOR", "/D ZEPHIR_RELEASE /Oi /Ot /Oy /Ob2 /Gs /GF /Gy /GL");
   ADD_FLAG("CFLAGS", "/D ZEPHIR_RELEASE /Oi /Ot /Oy /Ob2 /Gs /GF /Gy /GL");
   ADD_FLAG("LDFLAGS", "/LTCG");

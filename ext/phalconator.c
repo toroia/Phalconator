@@ -35,6 +35,7 @@ zend_class_entry *phalconator_cli_text_menu_ce;
 zend_class_entry *phalconator_mvc_collection_ce;
 zend_class_entry *phalconator_mvc_collection_document_ce;
 zend_class_entry *phalconator_mvc_collection_exception_ce;
+zend_class_entry *phalconator_validation_validator_password_ce;
 
 ZEND_DECLARE_MODULE_GLOBALS(phalconator)
 
@@ -58,6 +59,7 @@ static PHP_MINIT_FUNCTION(phalconator)
 	ZEPHIR_INIT(Phalconator_Mvc_Collection);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_Document);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_Exception);
+	ZEPHIR_INIT(Phalconator_Validation_Validator_Password);
 	
 	return SUCCESS;
 }
