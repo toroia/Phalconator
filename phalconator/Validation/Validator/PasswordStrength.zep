@@ -12,7 +12,7 @@ namespace Phalconator\Validation\Validator;
 
 use Phalcon\Validation;
 use Phalcon\Validation\Message;
-use Phalcon\Validation\Validator;
+use Phalcon\Validation\AbstractValidator;
 
 /**
  * Phalconator\Validation\Validator\Password
@@ -50,16 +50,18 @@ use Phalcon\Validation\Validator;
  * );
  * </code>
  */
-
-class Password extends Validator
+class PasswordStrength extends AbstractValidator
 {
 	const MIN_VALID_SCORE = 2;
+
+	protected template = "Field :field does not have a high enough score";
+
 	/**
 	 * Executes the validation
 	 */
-	public function validate(<Validation> validation, string! field) -> boolean
+	public function validate(<Validation> validation, var field) -> bool
 	{
-		var password, allowEmpty, minScore, passwordScore, label, message, code, replacePairs;
+		var password, allowEmpty, minScore, passwordScore;
 
 		let password = validation->getValue(field),
 			allowEmpty = this->getOption("allowEmpty");
@@ -80,20 +82,9 @@ class Password extends Validator
 			return true;
 		}
 
-		let label = this->prepareLabel(validation, field),
-			message = this->prepareMessage(validation, field, "Password"),
-			code = this->prepareCode(field);
-
-		let replacePairs = [":field": label];
-
 		validation->appendMessage(
-			new Message(
-				strtr(message, replacePairs),
-				field,
-				"Password",
-				code
-			)
-		);
+            this->messageFactory(validation, field)
+        );
 
 		return false;
 	}

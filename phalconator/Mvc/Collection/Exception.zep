@@ -11,9 +11,9 @@
 namespace Phalconator\Mvc\Collection;
 
 /**
- * Phalconator\Mvc\Collection\Exception
+ * Phalcon\Mvc\Collection\Exception
  *
- * Exceptions thrown in Phalconator\Mvc\Collection\* classes will use this class
+ * Exceptions thrown in Phalcon\Mvc\Collection\* classes will use this class
  *
  */
 class Exception extends \Phalconator\Exception

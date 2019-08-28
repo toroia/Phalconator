@@ -23,9 +23,9 @@
  * file that was distributed with this source code.
  */
 /**
- * Phalconator\Mvc\Collection\Exception
+ * Phalcon\Mvc\Collection\Exception
  *
- * Exceptions thrown in Phalconator\Mvc\Collection\* classes will use this class
+ * Exceptions thrown in Phalcon\Mvc\Collection\* classes will use this class
  *
  */
 ZEPHIR_INIT_CLASS(Phalconator_Mvc_Collection_Exception) {

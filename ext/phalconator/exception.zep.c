@@ -29,9 +29,8 @@
  */
 ZEPHIR_INIT_CLASS(Phalconator_Exception) {
 
-	ZEPHIR_REGISTER_CLASS_EX(Phalconator, Exception, phalconator, exception, zend_exception_get_default(TSRMLS_C), NULL, 0);
+	ZEPHIR_REGISTER_CLASS_EX(Phalconator, Exception, phalconator, exception, zephir_get_internal_ce(SL("phalcon\\exception")), NULL, 0);
 
-	zend_class_implements(phalconator_exception_ce TSRMLS_CC, 1, zephir_get_internal_ce(SL("throwable")));
 	return SUCCESS;
 
 }

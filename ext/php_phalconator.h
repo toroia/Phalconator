@@ -14,7 +14,7 @@
 #define PHP_PHALCONATOR_VERSION     "0.0.2"
 #define PHP_PHALCONATOR_EXTNAME     "phalconator"
 #define PHP_PHALCONATOR_AUTHOR      "Toroia Team and contributors"
-#define PHP_PHALCONATOR_ZEPVERSION  "0.12.0-$Id$"
+#define PHP_PHALCONATOR_ZEPVERSION  "0.12.2-$Id$"
 #define PHP_PHALCONATOR_DESCRIPTION "Web extension for Phalcon framework delivered as C-extension"
 
 
@@ -22,14 +22,6 @@
 ZEND_BEGIN_MODULE_GLOBALS(phalconator)
 
 	int initialized;
-
-	/* Memory */
-	zephir_memory_entry *start_memory; /**< The first preallocated frame */
-	zephir_memory_entry *end_memory; /**< The last preallocate frame */
-	zephir_memory_entry *active_memory; /**< The current memory frame */
-
-	/* Virtual Symbol Tables */
-	zephir_symbol_table *active_symbol_table;
 
 	/** Function cache */
 	HashTable *fcache;

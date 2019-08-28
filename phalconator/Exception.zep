@@ -15,7 +15,7 @@ namespace Phalconator;
  *
  * All librarie exceptions should use or extend this exception
  */
-class Exception extends \Exception implements \Throwable
+class Exception extends \Phalcon\Exception
 {
 
 }

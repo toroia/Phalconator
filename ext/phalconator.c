@@ -23,19 +23,20 @@
 
 
 
+zend_class_entry *phalconator_mvc_collection_behaviorinterface_ce;
 zend_class_entry *phalconator_mvc_collection_documentinterface_ce;
-zend_class_entry *phalconator_mvc_collectioninterface_ce;
-zend_class_entry *phalconator_mvc_entityinterface_ce;
 zend_class_entry *phalconator_mvc_collection_managerinterface_ce;
+zend_class_entry *phalconator_mvc_collectioninterface_ce;
+zend_class_entry *phalconator_mvc_collection_behavior_ce;
 zend_class_entry *phalconator_exception_ce;
-zend_class_entry *phalconator_cli_exception_ce;
-zend_class_entry *phalconator_cli_text_ce;
-zend_class_entry *phalconator_cli_text_color_ce;
-zend_class_entry *phalconator_cli_text_menu_ce;
+zend_class_entry *phalconator_mvc_collection_behavior_softdelete_ce;
+zend_class_entry *phalconator_mvc_collection_behavior_timestampable_ce;
 zend_class_entry *phalconator_mvc_collection_ce;
 zend_class_entry *phalconator_mvc_collection_document_ce;
 zend_class_entry *phalconator_mvc_collection_exception_ce;
-zend_class_entry *phalconator_validation_validator_password_ce;
+zend_class_entry *phalconator_mvc_collection_manager_ce;
+zend_class_entry *phalconator_mvc_resourcecontroller_ce;
+zend_class_entry *phalconator_validation_validator_passwordstrength_ce;
 
 ZEND_DECLARE_MODULE_GLOBALS(phalconator)
 
@@ -47,19 +48,20 @@ static PHP_MINIT_FUNCTION(phalconator)
 {
 	REGISTER_INI_ENTRIES();
 	zephir_module_init();
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_BehaviorInterface);
 	ZEPHIR_INIT(Phalconator_Mvc_CollectionInterface);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_DocumentInterface);
-	ZEPHIR_INIT(Phalconator_Mvc_EntityInterface);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_ManagerInterface);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_Behavior);
 	ZEPHIR_INIT(Phalconator_Exception);
-	ZEPHIR_INIT(Phalconator_Cli_Exception);
-	ZEPHIR_INIT(Phalconator_Cli_Text);
-	ZEPHIR_INIT(Phalconator_Cli_Text_Color);
-	ZEPHIR_INIT(Phalconator_Cli_Text_Menu);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_Behavior_SoftDelete);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_Behavior_Timestampable);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_Document);
 	ZEPHIR_INIT(Phalconator_Mvc_Collection_Exception);
-	ZEPHIR_INIT(Phalconator_Validation_Validator_Password);
+	ZEPHIR_INIT(Phalconator_Mvc_Collection_Manager);
+	ZEPHIR_INIT(Phalconator_Mvc_ResourceController);
+	ZEPHIR_INIT(Phalconator_Validation_Validator_PasswordStrength);
 	
 	return SUCCESS;
 }
@@ -80,12 +82,6 @@ static PHP_MSHUTDOWN_FUNCTION(phalconator)
 static void php_zephir_init_globals(zend_phalconator_globals *phalconator_globals TSRMLS_DC)
 {
 	phalconator_globals->initialized = 0;
-
-	/* Memory options */
-	phalconator_globals->active_memory = NULL;
-
-	/* Virtual Symbol Tables */
-	phalconator_globals->active_symbol_table = NULL;
 
 	/* Cache Enabled */
 	phalconator_globals->cache_enabled = 1;
@@ -119,7 +115,6 @@ static PHP_RINIT_FUNCTION(phalconator)
 	php_zephir_init_globals(phalconator_globals_ptr TSRMLS_CC);
 	zephir_initialize_memory(phalconator_globals_ptr TSRMLS_CC);
 
-		zephir_init_static_properties_Phalconator_Cli_Text_Color(TSRMLS_C);
 	
 	return SUCCESS;
 }
@@ -167,10 +162,15 @@ zend_function_entry php_phalconator_functions[] = {
 
 };
 
+static const zend_module_dep php_phalconator_deps[] = {
+	ZEND_MOD_REQUIRED("phalcon")
+	ZEND_MOD_END
+};
+
 zend_module_entry phalconator_module_entry = {
 	STANDARD_MODULE_HEADER_EX,
 	NULL,
-	NULL,
+	php_phalconator_deps,
 	PHP_PHALCONATOR_EXTNAME,
 	php_phalconator_functions,
 	PHP_MINIT(phalconator),

@@ -4,18 +4,19 @@
 #ifndef ZEPHIR_CLASS_ENTRIES_H
 #define ZEPHIR_CLASS_ENTRIES_H
 
+#include "phalconator/mvc/collection/behaviorinterface.zep.h"
+#include "phalconator/mvc/collection/behavior.zep.h"
 #include "phalconator/exception.zep.h"
 #include "phalconator/mvc/collection/documentinterface.zep.h"
+#include "phalconator/mvc/collection/managerinterface.zep.h"
 #include "phalconator/mvc/collectioninterface.zep.h"
-#include "phalconator/mvc/entityinterface.zep.h"
-#include "phalconator/cli/exception.zep.h"
-#include "phalconator/cli/text.zep.h"
-#include "phalconator/cli/text/color.zep.h"
-#include "phalconator/cli/text/menu.zep.h"
 #include "phalconator/mvc/collection.zep.h"
+#include "phalconator/mvc/collection/behavior/softdelete.zep.h"
+#include "phalconator/mvc/collection/behavior/timestampable.zep.h"
 #include "phalconator/mvc/collection/document.zep.h"
 #include "phalconator/mvc/collection/exception.zep.h"
-#include "phalconator/mvc/collection/managerinterface.zep.h"
-#include "phalconator/validation/validator/password.zep.h"
+#include "phalconator/mvc/collection/manager.zep.h"
+#include "phalconator/mvc/resourcecontroller.zep.h"
+#include "phalconator/validation/validator/passwordstrength.zep.h"
 
 #endif

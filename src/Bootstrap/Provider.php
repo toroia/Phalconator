@@ -13,7 +13,7 @@ namespace Phalconator\Bootstrap;
 
 use Phalcon\Di;
 use Phalcon\Di\ServiceProviderInterface;
-use Phalcon\DiInterface;
+use Phalcon\Di\DiInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -52,11 +52,9 @@ class Provider
         foreach ($services as $service) {
             try {
                 $class = new ReflectionClass($service);
-
                 if ($class->implementsInterface(ServiceProviderInterface::class)) {
                     $this->services[] = $service;
                 }
-
             } catch (ReflectionException $e) {
                 throw new Exception("L'application na pas pu démarrer, le service <$service> est mal implémenté.");
             }

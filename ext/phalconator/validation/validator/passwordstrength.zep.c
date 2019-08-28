@@ -15,10 +15,7 @@
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
 #include "kernel/operators.h"
-#include "kernel/array.h"
 #include "kernel/object.h"
-#include "ext/spl/spl_exceptions.h"
-#include "kernel/exception.h"
 #include "kernel/string.h"
 
 
@@ -66,11 +63,13 @@
  * );
  * </code>
  */
-ZEPHIR_INIT_CLASS(Phalconator_Validation_Validator_Password) {
+ZEPHIR_INIT_CLASS(Phalconator_Validation_Validator_PasswordStrength) {
 
-	ZEPHIR_REGISTER_CLASS_EX(Phalconator\\Validation\\Validator, Password, phalconator, validation_validator_password, zephir_get_internal_ce(SL("phalcon\\validation\\validator")), phalconator_validation_validator_password_method_entry, 0);
+	ZEPHIR_REGISTER_CLASS_EX(Phalconator\\Validation\\Validator, PasswordStrength, phalconator, validation_validator_passwordstrength, zephir_get_internal_ce(SL("phalcon\\validation\\abstractvalidator")), phalconator_validation_validator_passwordstrength_method_entry, 0);
 
-	zephir_declare_class_constant_long(phalconator_validation_validator_password_ce, SL("MIN_VALID_SCORE"), 2);
+	zend_declare_property_string(phalconator_validation_validator_passwordstrength_ce, SL("template"), "Field :field does not have a high enough score", ZEND_ACC_PROTECTED TSRMLS_CC);
+
+	zephir_declare_class_constant_long(phalconator_validation_validator_passwordstrength_ce, SL("MIN_VALID_SCORE"), 2);
 
 	return SUCCESS;
 
@@ -79,45 +78,29 @@ ZEPHIR_INIT_CLASS(Phalconator_Validation_Validator_Password) {
 /**
  * Executes the validation
  */
-PHP_METHOD(Phalconator_Validation_Validator_Password, validate) {
+PHP_METHOD(Phalconator_Validation_Validator_PasswordStrength, validate) {
 
-	zend_class_entry *_2 = NULL;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
 	zend_long ZEPHIR_LAST_CALL_STATUS;
-	zval field;
-	zval *validation, validation_sub, *field_param = NULL, password, allowEmpty, minScore, passwordScore, label, message, code, replacePairs, _0, _1, _3, _4;
+	zval *validation, validation_sub, *field, field_sub, password, allowEmpty, minScore, passwordScore, _0, _1, _2;
 	zval *this_ptr = getThis();
 
 	ZVAL_UNDEF(&validation_sub);
+	ZVAL_UNDEF(&field_sub);
 	ZVAL_UNDEF(&password);
 	ZVAL_UNDEF(&allowEmpty);
 	ZVAL_UNDEF(&minScore);
 	ZVAL_UNDEF(&passwordScore);
-	ZVAL_UNDEF(&label);
-	ZVAL_UNDEF(&message);
-	ZVAL_UNDEF(&code);
-	ZVAL_UNDEF(&replacePairs);
 	ZVAL_UNDEF(&_0);
 	ZVAL_UNDEF(&_1);
-	ZVAL_UNDEF(&_3);
-	ZVAL_UNDEF(&_4);
-	ZVAL_UNDEF(&field);
+	ZVAL_UNDEF(&_2);
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 2, 0, &validation, &field_param);
-
-	if (UNEXPECTED(Z_TYPE_P(field_param) != IS_STRING && Z_TYPE_P(field_param) != IS_NULL)) {
-		zephir_throw_exception_string(spl_ce_InvalidArgumentException, SL("Parameter 'field' must be of the type string") TSRMLS_CC);
-		RETURN_MM_NULL();
-	}
-	if (EXPECTED(Z_TYPE_P(field_param) == IS_STRING)) {
-		zephir_get_strval(&field, field_param);
-	} else {
-		ZEPHIR_INIT_VAR(&field);
-		ZVAL_EMPTY_STRING(&field);
-	}
+	zephir_fetch_params(1, 2, 0, &validation, &field);
 
 
-	ZEPHIR_CALL_METHOD(&password, validation, "getvalue", NULL, 0, &field);
+
+	ZEPHIR_CALL_METHOD(&password, validation, "getvalue", NULL, 0, field);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(&_0);
 	ZVAL_STRING(&_0, "allowEmpty");
@@ -139,36 +122,14 @@ PHP_METHOD(Phalconator_Validation_Validator_Password, validate) {
 		ZEPHIR_INIT_NVAR(&minScore);
 		ZVAL_LONG(&minScore, 2);
 	}
-	ZEPHIR_CALL_METHOD(&passwordScore, this_ptr, "scorecalculator", NULL, 15, &password);
+	ZEPHIR_CALL_METHOD(&passwordScore, this_ptr, "scorecalculator", NULL, 11, &password);
 	zephir_check_call_status();
 	if ((Z_TYPE_P(&password) == IS_STRING & ZEPHIR_GE(&passwordScore, &minScore))) {
 		RETURN_MM_BOOL(1);
 	}
-	ZEPHIR_CALL_METHOD(&label, this_ptr, "preparelabel", NULL, 0, validation, &field);
+	ZEPHIR_CALL_METHOD(&_2, this_ptr, "messagefactory", NULL, 0, validation, field);
 	zephir_check_call_status();
-	ZEPHIR_INIT_NVAR(&_0);
-	ZVAL_STRING(&_0, "Password");
-	ZEPHIR_CALL_METHOD(&message, this_ptr, "preparemessage", NULL, 0, validation, &field, &_0);
-	zephir_check_call_status();
-	ZEPHIR_CALL_METHOD(&code, this_ptr, "preparecode", NULL, 0, &field);
-	zephir_check_call_status();
-	ZEPHIR_INIT_VAR(&replacePairs);
-	zephir_create_array(&replacePairs, 1, 0 TSRMLS_CC);
-	zephir_array_update_string(&replacePairs, SL(":field"), &label, PH_COPY | PH_SEPARATE);
-	ZEPHIR_INIT_NVAR(&_0);
-	if (!_2) {
-	_2 = zephir_fetch_class_str_ex(SL("Phalcon\\Validation\\Message"), ZEND_FETCH_CLASS_AUTO);
-	}
-	object_init_ex(&_0, _2);
-	if (zephir_has_constructor(&_0 TSRMLS_CC)) {
-		ZEPHIR_CALL_FUNCTION(&_3, "strtr", NULL, 16, &message, &replacePairs);
-		zephir_check_call_status();
-		ZEPHIR_INIT_VAR(&_4);
-		ZVAL_STRING(&_4, "Password");
-		ZEPHIR_CALL_METHOD(NULL, &_0, "__construct", NULL, 0, &_3, &field, &_4, &code);
-		zephir_check_call_status();
-	}
-	ZEPHIR_CALL_METHOD(NULL, validation, "appendmessage", NULL, 0, &_0);
+	ZEPHIR_CALL_METHOD(NULL, validation, "appendmessage", NULL, 0, &_2);
 	zephir_check_call_status();
 	RETURN_MM_BOOL(0);
 
@@ -180,8 +141,9 @@ PHP_METHOD(Phalconator_Validation_Validator_Password, validate) {
  * @param  string password
  * @return int
  */
-PHP_METHOD(Phalconator_Validation_Validator_Password, scoreCalculator) {
+PHP_METHOD(Phalconator_Validation_Validator_PasswordStrength, scoreCalculator) {
 
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
 	zend_long ZEPHIR_LAST_CALL_STATUS, score = 0;
 	zval *password, password_sub, hasLower, hasUpper, hasNumber, passwordLength, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20;
 	zval *this_ptr = getThis();
@@ -274,7 +236,7 @@ PHP_METHOD(Phalconator_Validation_Validator_Password, scoreCalculator) {
 	if (zephir_is_true(&_19)) {
 		score++;
 	}
-	ZEPHIR_CALL_FUNCTION(&passwordLength, "mb_strlen", NULL, 17, password);
+	ZEPHIR_CALL_FUNCTION(&passwordLength, "mb_strlen", NULL, 12, password);
 	zephir_check_call_status();
 	if (ZEPHIR_GE_LONG(&passwordLength, 16)) {
 		score += 2;

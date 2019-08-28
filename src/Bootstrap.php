@@ -12,11 +12,11 @@
 namespace Phalconator;
 
 use DirectoryIterator;
-use Phalcon\Application;
+use Phalcon\Application\AbstractApplication as Application;
 use Phalcon\Config;
 use Phalcon\Config\Adapter\Json;
 use Phalcon\Di\ServiceProviderInterface;
-use Phalcon\DiInterface;
+use Phalcon\Di\DiInterface;
 use Phalconator\Bootstrap\Exception;
 use Phalconator\Bootstrap\Provider;
 

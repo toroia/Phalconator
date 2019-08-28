@@ -11,7 +11,7 @@
 
 namespace Phalconator\Mvc;
 
-use Phalcon\Dispatcher;
+use Phalcon\Dispatcher\AbstractDispatcher as Dispatcher;
 use Phalcon\Mvc\Controller;
 
 /**
