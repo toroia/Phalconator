@@ -22,6 +22,7 @@ if test "$PHP_PHALCONATOR" = "yes"; then
 	phalconator/mvc/collection/exception.zep.c
 	phalconator/mvc/collection/manager.zep.c
 	phalconator/mvc/resourcecontroller.zep.c
+	phalconator/session/adapter/jwt.zep.c
 	phalconator/validation/validator/passwordstrength.zep.c "
 	PHP_NEW_EXTENSION(phalconator, $phalconator_sources, $ext_shared,, )
 	PHP_SUBST(PHALCONATOR_SHARED_LIBADD)

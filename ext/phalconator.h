@@ -17,6 +17,7 @@
 #include "phalconator/mvc/collection/exception.zep.h"
 #include "phalconator/mvc/collection/manager.zep.h"
 #include "phalconator/mvc/resourcecontroller.zep.h"
+#include "phalconator/session/adapter/jwt.zep.h"
 #include "phalconator/validation/validator/passwordstrength.zep.h"
 
 #endif

@@ -14,6 +14,7 @@ if (PHP_PHALCONATOR != "no") {
 	ADD_SOURCES(configure_module_dirname + "/phalconator", "exception.zep.c", "phalconator");
 	ADD_SOURCES(configure_module_dirname + "/phalconator/mvc", "collectioninterface.zep.c collection.zep.c resourcecontroller.zep.c", "phalconator");
 	ADD_SOURCES(configure_module_dirname + "/phalconator/mvc/collection/behavior", "softdelete.zep.c timestampable.zep.c", "phalconator");
+	ADD_SOURCES(configure_module_dirname + "/phalconator/session/adapter", "jwt.zep.c", "phalconator");
 	ADD_SOURCES(configure_module_dirname + "/phalconator/validation/validator", "passwordstrength.zep.c", "phalconator");
   ADD_FLAG("CFLAGS_PHALCONATOR", "/D ZEPHIR_RELEASE /Oi /Ot /Oy /Ob2 /Gs /GF /Gy /GL");
   ADD_FLAG("CFLAGS", "/D ZEPHIR_RELEASE /Oi /Ot /Oy /Ob2 /Gs /GF /Gy /GL");
