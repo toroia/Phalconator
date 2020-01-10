@@ -1,4 +1,3 @@
-# Specific attributes (from https://github.com/phalcon/cphalcon/blob/master/.gitattributes)
 *.zep.h linguist-language=C
 *.zep.c linguist-language=C
 *.sql   linguist-language=SQL
